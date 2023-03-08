@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.My_movie_search">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
