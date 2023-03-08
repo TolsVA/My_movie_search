@@ -1,4 +1,4 @@
-package com.example.my_movie_search
+package com.example.my_movie_search.adapters
 
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2

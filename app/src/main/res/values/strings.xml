@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">My_movie_search</string>
-    <string name="getr">Генадий</string>
-    <string name="ivan">Иван</string>
-    <string name="sergei">Сергей</string>
-    <string name="stepan">Степан</string>
-    <string name="vitaliy">Виталий</string>
-    <string name="misha">Миша</string>
-    <string name="masha">Маша</string>
+    <string name="getr">Фильм про Генадия</string>
+    <string name="ivan">Фильм про Ивана</string>
+    <string name="sergei">Фильм про Сергея</string>
+    <string name="stepan">Фильм про Степана</string>
+    <string name="vitaliy">Фильм про Виталия</string>
+    <string name="misha">Фильм про Мишу</string>
+    <string name="masha">Фильм про Машу</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="change">Изменить</string>
