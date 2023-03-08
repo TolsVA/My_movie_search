@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="avatar">
+        <item>@drawable/getr</item>
+        <item>@drawable/ivan</item>
+        <item>@drawable/sergei</item>
+        <item>@drawable/stepan</item>
+        <item>@drawable/vitaliy</item>
+    </integer-array>
+    <string-array name="nameAvatar">
+        <item>@string/getr</item>
+        <item>@string/ivan</item>
+        <item>@string/sergei</item>
+        <item>@string/stepan</item>
+        <item>@string/vitaliy</item>
+    </string-array>
+</resources>
