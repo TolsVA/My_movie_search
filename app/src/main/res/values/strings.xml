@@ -1,25 +1,26 @@
 <resources>
     <string name="app_name">My_movie_search</string>
-    <string name="getr">Фильм про Генадия</string>
-    <string name="ivan">Фильм про Ивана</string>
-    <string name="sergei">Фильм про Сергея</string>
-    <string name="stepan">Фильм про Степана</string>
-    <string name="vitaliy">Фильм про Виталия</string>
-    <string name="misha">Фильм про Мишу</string>
-    <string name="masha">Фильм про Машу</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="change">Изменить</string>
-    <string name="return_user">Вернуть</string>
-    <string name="start">Старт</string>
-    <string name="stop">Стоп</string>
-    <string name="add_change">Добавить/Изменить</string>
-    <string name="activity_main_count">Счётчик Activity_main</string>
+
+    <string name="change">Change</string>
+    <string name="return_user">Return</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="add_change">Add/Change</string>
+    <string name="activity_main_count">Activity main count</string>
     <string name="zero">0</string>
-    <string name="start_name">Старт Имя</string>
-    <string name="Choose_a_photo">Выбери фото</string>
-    <string name="scroll">Прокрути ◁ - ▷</string>
-    <string name="Enter_your_name">Введите имя</string>
-    <string name="create_contact">Создать контакт</string>
-    <string name="cancel">Отмена</string>
+    <string name="start_name">Start_name</string>
+    <string name="Choose_a_photo">Choose a photoо</string>
+    <string name="scroll">Scroll ◁ - ▷</string>
+    <string name="Enter_your_name">Enter your name</string>
+    <string name="create_contact">Create contact</string>
+    <string name="cancel">Cancel</string>
+    <string name="short_description">Short description</string>
+    <string name="genre">Genre</string>
+    <string name="author">Author</string>
+    <string name="name_movie">Name movie</string>
+
+    <string name="russian_movie">Russian movie №</string>
+    <string name="world_film">World film №</string>
 </resources>
