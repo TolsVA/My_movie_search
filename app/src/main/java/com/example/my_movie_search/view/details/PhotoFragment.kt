@@ -1,4 +1,4 @@
-package com.example.my_movie_search.view
+package com.example.my_movie_search.view.details
 
 import android.os.Bundle
 import android.view.LayoutInflater

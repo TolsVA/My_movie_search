@@ -20,7 +20,7 @@ class MyDialogFragmentImageView : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val customView = layoutInflater.inflate(R.layout.icon_name_group, null)
 //        val editText = customView.findViewById<EditText>(R.id.folder_name)
-        icons = resources.obtainTypedArray(R.array.avatar)
+        icons = resources.obtainTypedArray(R.array.world_cover_landscape)
         pager2 = customView.findViewById(R.id.pager_photo)
         pager2!!.adapter = MyAdapterIcon(this, icons!!)
         pager2!!.setPageTransformer(ZoomOutPageTransformer())
