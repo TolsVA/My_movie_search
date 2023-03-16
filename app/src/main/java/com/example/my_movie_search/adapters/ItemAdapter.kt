@@ -9,13 +9,14 @@ import com.example.my_movie_search.R
 import com.example.my_movie_search.model.Movie
 
 class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
+
     private lateinit var movieList: MutableList<Movie>
     private var isLocal: Boolean = true
-    private lateinit var onClickItem: OnClickItem
+    private var onClickItem: OnClickItem? = null
 
-    private fun getOnClickItem(): OnClickItem = onClickItem
+    private fun getOnClickItem(): OnClickItem? = onClickItem
 
-    fun setOnClickItem(onClickItem: OnClickItem) {
+    fun setOnClickItem(onClickItem: OnClickItem?) {
         this.onClickItem = onClickItem
     }
 
@@ -27,46 +28,45 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
         this.movieList = movieList
     }
 
-    class ItemHolder(item: View) : RecyclerView.ViewHolder(item) {
-        fun bind(movie: Movie, imageView: ImageView?) {
-            imageView?.setImageResource(movie.imageId)
+    inner class ItemHolder(item: View) : RecyclerView.ViewHolder(item) {
+        fun bind(movie: Movie, imageView: ImageView) {
+            imageView.setImageResource(movie.imageId)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(
-                if (isLocal) {
-                    R.layout.item_movie_portrait
-                } else {
-                    R.layout.item_movie_landscape
-                },
-                parent,
-                false
-            )
-        return ItemHolder(view)
+        return ItemHolder(
+            LayoutInflater
+                .from(parent.context)
+                .inflate(
+                    when (isLocal) {
+                        true -> R.layout.item_movie_portrait
+                        false -> R.layout.item_movie_landscape
+                    },
+                    parent,
+                    false
+                )
+        )
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-        val view = holder.itemView
-        val imageView: ImageView = if (isLocal) {
-            view.findViewById(R.id.iv_movie_portrait)
-        } else {
-            view.findViewById(R.id.iv_movie_landscape)
-        }
+        holder.itemView.apply {
+            val movie = movieList[position]
+            holder.bind(
+                movie,
+                when (isLocal) {
+                    true -> findViewById(R.id.iv_movie_portrait)
+                    false -> findViewById(R.id.iv_movie_landscape)
+                }
+            )
 
-        val movie: Movie = movieList[position]
-        holder.bind(movie, imageView)
-
-        view.setOnClickListener {
-            getOnClickItem().onClickItem(movie, position)
+            setOnClickListener {
+                getOnClickItem()?.onClickItem(movie, position)
+            }
         }
     }
 
-    override fun getItemCount(): Int {
-        return movieList.size
-    }
+    override fun getItemCount(): Int = movieList.size
 
     fun setLocation(b: Boolean) {
         isLocal = b

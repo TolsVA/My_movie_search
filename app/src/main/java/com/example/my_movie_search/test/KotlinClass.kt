@@ -1,7 +1,10 @@
 package com.example.my_movie_search.test
 
-class KotlinClass(/*var tvInfo: TextView*/) {
-/*    var ss: String? = "22"
+/*import android.icu.text.SimpleDateFormat
+import java.util.*
+
+class KotlinClass(var tvInfo: TextView) {
+    var ss: String? = "22"
 
     fun ggg() {
         var d: Double = ss?.toDouble() ?: 1.1
@@ -20,7 +23,7 @@ class KotlinClass(/*var tvInfo: TextView*/) {
         arr7.add(88)
         arr7.add(88)
 
-//        arr4.add(null) // Ошибка компиляции
+//        arr4.add(null) // error compilations
         val arr9 = MutableList<String?>(5) { null }
         arr9.add("66")
 
@@ -42,5 +45,53 @@ class KotlinClass(/*var tvInfo: TextView*/) {
 
         tvInfo.text = "${arr4.contentToString()}\n${arr8.contentToString()}\n" +
                 "$arr9\n$map\n$notEmpty\n${MainActivity::class.java.simpleName}"
-    } */
+    }
+
+    val sum = { a: Int, b: Int -> a + b }
+
+    fun print(block: () -> Any) {
+        println(block())
+    }
+
+    val date = Date(1234).format()
+//    val dataFormat : String = date.toString()
+
+    val dd: String = date
+
+    class Person {
+        var name: String? = null
+        var age: Int? = null
+    }
+
+    fun fff() {
+        val person: Person = Person().also {
+            it.name = ""
+        }
+        with(person) {
+            name = "ddd"
+            age = 22
+        }
+    }
+
+    fun getDefaultLocale(deliveryArea: String): Locale {
+        val deliverAreaLower = deliveryArea.toLowerCase()
+        if (deliverAreaLower == "germany" || deliverAreaLower == "austria") {
+            return Locale.GERMAN }
+        if (deliverAreaLower == "usa" || deliverAreaLower == "great britain") { return Locale.ENGLISH
+        }
+        if (deliverAreaLower == "france") {
+            return Locale.FRENCH }
+        return Locale.ENGLISH }
+
+    fun getDefaultLocale2(deliveryArea: String) = when (deliveryArea.toLowerCase()) {
+        "germany", "austria" -> Locale.GERMAN
+        "usa", "great britain" -> Locale.ENGLISH
+        "france" -> Locale.FRENCH
+        else -> Locale.ENGLISH }
+
 }
+
+const val DATE_TIME_FORMAT = "dd.MMM.yy HH:mm"
+fun Date.format(): String = SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault())
+    .format(this)
+*/

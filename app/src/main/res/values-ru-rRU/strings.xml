@@ -24,5 +24,7 @@
 
     <string name="russian_movie">Русский фильм №</string>
     <string name="world_film">Mировой фильм №</string>
+    <string name="error">Ошибка</string>
+    <string name="reload">Перезагрузить</string>
 
 </resources>

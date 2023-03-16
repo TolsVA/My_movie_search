@@ -1,33 +1,16 @@
 package com.example.my_movie_search.model
 
 object RepositoryImpl : Repository {
-    private lateinit var listMoviePortraitWorld: MutableList<Movie>
-    private lateinit var listMovieLandscapeWorld: MutableList<Movie>
-    private lateinit var listMoviePortraitRus: MutableList<Movie>
-    private lateinit var listMovieLandscapeRus: MutableList<Movie>
+    private lateinit var listMovies: MutableList<MutableList<Movie>>
 
-    override fun getMovieFromServer(): Movie {
-        return Movie(55, "")
-    }
+    override fun getMovieFromLocalStoragePortWorld(): MutableList<Movie> = getListMovie(0)
+    override fun getMovieFromLocalStorageLandWorld(): MutableList<Movie> = getListMovie(1)
+    override fun getMovieFromLocalStoragePortraitRus(): MutableList<Movie> = getListMovie(2)
+    override fun getMovieFromLocalStorageLandscapeRus(): MutableList<Movie> = getListMovie(3)
 
-    override fun getMovieFromLocalStoragePortraitWorld(): MutableList<Movie> {
-        return listMoviePortraitWorld
-    }
-    override fun getMovieFromLocalStorageLandscapeWorld(): MutableList<Movie> {
-        return listMovieLandscapeWorld
-    }
+    private fun getListMovie(index: Int): MutableList<Movie> = listMovies[index]
 
-    override fun getMovieFromLocalStoragePortraitRus(): MutableList<Movie> {
-        return listMoviePortraitRus
-    }
-    override fun getMovieFromLocalStorageLandscapeRus(): MutableList<Movie> {
-        return listMovieLandscapeRus
-    }
-
-    fun addListMovie(listMovie: MutableList<MutableList<Movie>>) {
-        listMoviePortraitWorld = listMovie[0]
-        listMovieLandscapeWorld = listMovie[1]
-        listMoviePortraitRus = listMovie[2]
-        listMovieLandscapeRus = listMovie[3]
+    fun addListMovie(listMovies: MutableList<MutableList<Movie>>) {
+        this.listMovies = listMovies
     }
 }
