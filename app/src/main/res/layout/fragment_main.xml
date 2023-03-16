@@ -52,8 +52,7 @@
                     android:id="@+id/rv_list_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="top"
-                    tools:listitem="@layout/item_movie_portrait" />
+                    tools:listitem="@layout/item_movie_landscape" />
 
                 <ProgressBar
                     android:id="@+id/progress_vertical"
@@ -74,7 +73,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:foreground="@drawable/flag_of_russia"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
 
 </FrameLayout>

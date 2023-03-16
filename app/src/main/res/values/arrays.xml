@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer-array name="world_cover_landscape">
+    <integer-array name="world_cover_land">
         <item>@drawable/fb11</item>
         <item>@drawable/fb12_total_recall</item>
         <item>@drawable/fb13</item>
@@ -10,7 +10,7 @@
         <item>@drawable/fb17</item>
         <item>@drawable/fb18_titanic</item>
     </integer-array>
-    <integer-array name="world_cover_portrait">
+    <integer-array name="world_cover_port">
         <item>@drawable/efm11</item>
         <item>@drawable/efm12</item>
         <item>@drawable/efm13</item>

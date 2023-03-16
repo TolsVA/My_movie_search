@@ -13,38 +13,36 @@ class MainViewModel(
     private val repositoryImpl: Repository = RepositoryImpl,
     private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData()
 ) : ViewModel() {
-    //    private val liveDataToObservePortrait: MutableLiveData<AppState> = MutableLiveData()
-//    private val liveDataToObserveLandscape: MutableLiveData<AppState> = MutableLiveData()
-//    private val repositoryImpl: Repository = RepositoryImpl
-//    private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData()
+
     fun getLiveDataPortrait() = liveDataToObservePortrait
     fun getLiveDataLandscape() = liveDataToObserveLandscape
     fun getLiveDataDetail() = messageDetailFragment
     fun getMovie(isRus: Boolean) = getDataFromLocalSource(isRus)
 
     private fun getDataFromLocalSource(isRus: Boolean) {
+
         liveDataToObservePortrait.value = AppState.Loading
         liveDataToObserveLandscape.value = AppState.Loading
+
         Thread {
             sleep(1000)
             liveDataToObservePortrait.postValue(
                 AppState.Success(
-                    listMovies = if (isRus) {
-                        repositoryImpl.getMovieFromLocalStoragePortraitRus()
-                    } else {
-                        repositoryImpl.getMovieFromLocalStoragePortraitWorld()
+                    listMovies = when (isRus) {
+                        true -> repositoryImpl.getMovieFromLocalStoragePortraitRus()
+                        false -> repositoryImpl.getMovieFromLocalStoragePortWorld()
                     }
                 )
             )
         }.start()
+
         Thread {
-            sleep(2000)
+            sleep(1500)
             liveDataToObserveLandscape.postValue(
                 AppState.Success(
-                    listMovies = if (isRus) {
-                        repositoryImpl.getMovieFromLocalStorageLandscapeRus()
-                    } else {
-                        repositoryImpl.getMovieFromLocalStorageLandscapeWorld()
+                    listMovies = when (isRus) {
+                        true -> repositoryImpl.getMovieFromLocalStorageLandscapeRus()
+                        false -> repositoryImpl.getMovieFromLocalStorageLandWorld()
                     }
                 )
             )

@@ -1,6 +1,5 @@
 package com.example.my_movie_search.view.main
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -8,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,58 +18,70 @@ import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.view.details.DetailFragment
+import com.example.my_movie_search.view.hide
+import com.example.my_movie_search.view.show
+import com.example.my_movie_search.view.showSnackBar
 import com.example.my_movie_search.viewModel.AppState
 import com.example.my_movie_search.viewModel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainFragment : Fragment() {
-    lateinit var viewModel: MainViewModel
+
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
+
+    private val pref: SharedPreferences by lazy {
+        requireActivity().getSharedPreferences("TABLE", Context.MODE_PRIVATE)
+    }
+
+    private val adapterHorizontal = ItemAdapter()
+    private val adapterVertical = ItemAdapter()
     private var isRus: Boolean = true
-    private var pref: SharedPreferences? = null
+    private var flag: Boolean = true
     private var _binding: FragmentMainBinding? = null
     private val binding
         get() = _binding!!
 
     companion object {
         private const val ARG_RUS_REY = "ARG_RUS_REY"
+
         fun newInstance() = MainFragment()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        flag = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        pref = requireActivity().getSharedPreferences("TABLE", Context.MODE_PRIVATE)
-        isRus = pref!!.getBoolean(ARG_RUS_REY, true)
+        isRus = pref.getBoolean(ARG_RUS_REY, true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        val editor: SharedPreferences.Editor = pref!!.edit()
-        editor
-            .putBoolean(ARG_RUS_REY, isRus)
-            .apply()
+        pref.edit().putBoolean(ARG_RUS_REY, isRus).apply()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-        val observerPortrait = Observer<AppState> {
-            renderData(it, true)
-        }
-        viewModel.getLiveDataPortrait().observe(viewLifecycleOwner, observerPortrait)
+        val observerPortrait = getObserver(true)
+        val observerLandscape = getObserver(false)
 
-        val observerLandscape = Observer<AppState> {
-            renderData(it, false)
-        }
-        viewModel.getLiveDataLandscape().observe(viewLifecycleOwner, observerLandscape)
+        viewModel.apply {
+            getLiveDataPortrait().observe(viewLifecycleOwner, observerPortrait)
+            getLiveDataLandscape().observe(viewLifecycleOwner, observerLandscape)
 
-        if (savedInstanceState == null) {
-            viewModel.getMovie(!isRus)
+            if (flag) {
+                getMovie(!isRus)
+            }
         }
 
-        binding.apply {
+        with(binding) {
             fabSetIcon(!isRus, fab)
+
             fab.setOnClickListener {
                 fabSetIcon(isRus, fab)
                 viewModel.getMovie(isRus)
@@ -78,19 +90,15 @@ class MainFragment : Fragment() {
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private fun fabSetIcon(b: Boolean, fab: FloatingActionButton) {
-        if (b) {
-            fab.foreground = resources.getDrawable(
-                R.drawable.earth,
-                requireContext().theme
-            )
-        } else {
-            fab.foreground = resources.getDrawable(
-                R.drawable.flag_of_russia,
-                requireContext().theme
-            )
-        }
+        fab.foreground = ResourcesCompat.getDrawable(
+            resources,
+            when (b) {
+                true -> R.drawable.earth
+                false -> R.drawable.flag_of_russia
+            },
+            requireContext().theme
+        )
     }
 
     override fun onCreateView(
@@ -102,67 +110,80 @@ class MainFragment : Fragment() {
     }
 
     private fun renderData(appState: AppState, b: Boolean) {
-        binding.apply {
-            val progress: ProgressBar = if (b) {
-                progressHorizontal
-            } else {
-                progressVertical
+        with(binding) {
+            val progress: ProgressBar = when (b) {
+                true -> progressHorizontal
+                false -> progressVertical
             }
+
             when (appState) {
                 is AppState.Success -> {
-                    val listMovies = appState.listMovies
-                    progress.visibility = View.GONE
-                    setData(listMovies, b)
+                    progress.hide()
+                    setData(appState.listMovies, b)
                 }
-                is AppState.Loading -> {
-                    progress.visibility = View.VISIBLE
-                }
+
+                is AppState.Loading -> { progress.show() }
+
                 is AppState.Error -> {
-                    progress.visibility = View.GONE
+                    progress.hide()
+                    progress.showSnackBar(
+                        getString(R.string.error),
+                        getString(R.string.reload),
+                        { viewModel.getMovie(!isRus) }
+                    )
                 }
             }
         }
     }
 
     private fun setData(listMovies: MutableList<Movie>, b: Boolean) {
-        val adapter = ItemAdapter()
         binding.apply {
-            if (b) {
-                rvListHorizontal.layoutManager = LinearLayoutManager(
-                    context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
-                rvListHorizontal.adapter = adapter
-            } else {
-                rvListVertical.layoutManager = LinearLayoutManager(
-                    context,
-                    LinearLayoutManager.VERTICAL,
-                    false
-                )
-                rvListVertical.adapter = adapter
-            }
-            adapter.setLocation(b)
-            adapter.addMovieList(listMovies)
-            adapter.setOnClickItem(object : OnClickItem {
-                override fun onClickItem(
-                    movie: Movie,
-                    position: Int
-                ) {
-                    viewModel.getLiveDataDetail().value = movie
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.container, DetailFragment.newInstance())
-                        .addToBackStack("ff")
-                        .commit()
+            val adapter = when (b) {
+                true -> {
+                    rvListHorizontal.layoutManager = LinearLayoutManager(
+                        context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    ).also { rvListHorizontal.adapter = adapterHorizontal }
+                    adapterHorizontal
                 }
-            })
+
+                false -> {
+                    rvListVertical.layoutManager = LinearLayoutManager(
+                        context,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    ).also { rvListVertical.adapter = adapterVertical }
+                    adapterVertical
+                }
+            }
+
+            adapter.apply {
+                setLocation(b)
+                addMovieList(listMovies)
+                setOnClickItem(object : OnClickItem {
+                    override fun onClickItem(
+                        movie: Movie,
+                        position: Int
+                    ) {
+                        viewModel.getLiveDataDetail().value = movie
+
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.container, DetailFragment.newInstance())
+                            .addToBackStack("ff")
+                            .commit()
+                    }
+                })
+            }
         }
     }
+
+    private fun getObserver(b: Boolean) = Observer<AppState> { renderData(it, b) }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        adapterVertical.setOnClickItem(null)
+        adapterHorizontal.setOnClickItem(null)
     }
 }
-
-

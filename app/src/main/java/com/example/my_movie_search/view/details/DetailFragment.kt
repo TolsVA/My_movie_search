@@ -9,12 +9,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.my_movie_search.databinding.FragmentDetailBinding
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.view.mySetText
 import com.example.my_movie_search.viewModel.MainViewModel
 
 class DetailFragment : Fragment() {
-    private lateinit var dataModel: MainViewModel
+
+    private val dataModel: MainViewModel by lazy {
+        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
 
     private var _binding: FragmentDetailBinding? = null
+
     private val binding
         get() = _binding!!
 
@@ -22,29 +27,26 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentDetailBinding.inflate( inflater, container, false )
         return binding.root
     }
 
-    @Suppress("DEPRECATION")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated( view: View, savedInstanceState: Bundle? ) {
 
-        dataModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-
-        val observer = Observer<Movie> {
-            renderData(it)
+        val observer = Observer<Movie> { movie ->
+            renderData( movie )
         }
 
-        dataModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
+        dataModel.getLiveDataDetail().observe( viewLifecycleOwner, observer )
     }
 
-    private fun renderData(it: Movie) {
+    private fun renderData( movie: Movie ) {
         binding.apply {
-            ivMovieDetail.setImageResource(it.imageId)
-            tvName.text = it.name
-            tvGenre.text = it.genre
-            tvAuthor.text = it.author.toString()
-            tvShortDescription.text = it.shortDescription
+            ivMovieDetail.setImageResource( movie.imageId )
+            tvName.mySetText( movie.name )
+            tvGenre.mySetText( movie.genre )
+            tvAuthor.mySetText( movie.author.toString() )
+            tvShortDescription.mySetText( movie.shortDescription )
         }
     }
 
@@ -57,6 +59,3 @@ class DetailFragment : Fragment() {
         fun newInstance() = DetailFragment()
     }
 }
-
-
-
