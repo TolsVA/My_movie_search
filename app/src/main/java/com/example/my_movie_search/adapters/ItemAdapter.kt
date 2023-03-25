@@ -1,5 +1,6 @@
 package com.example.my_movie_search.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,11 +8,10 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.my_movie_search.R
 import com.example.my_movie_search.model.Movie
+import com.squareup.picasso.Picasso
 
 class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
-
-    private lateinit var movieList: MutableList<Movie>
-    private var isLocal: Boolean = true
+    private var movieList: MutableList<Movie> =  mutableListOf()
     private var onClickItem: OnClickItem? = null
 
     private fun getOnClickItem(): OnClickItem? = onClickItem
@@ -29,8 +29,13 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
     }
 
     inner class ItemHolder(item: View) : RecyclerView.ViewHolder(item) {
+        private val context: Context = item.context
         fun bind(movie: Movie, imageView: ImageView) {
-            imageView.setImageResource(movie.imageId)
+
+            Picasso.with(context)
+                .load( movie.poster?.url )
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(imageView)
         }
     }
 
@@ -39,10 +44,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
             LayoutInflater
                 .from(parent.context)
                 .inflate(
-                    when (isLocal) {
-                        true -> R.layout.item_movie_portrait
-                        false -> R.layout.item_movie_landscape
-                    },
+                    R.layout.item_movie_portrait,
                     parent,
                     false
                 )
@@ -54,10 +56,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
             val movie = movieList[position]
             holder.bind(
                 movie,
-                when (isLocal) {
-                    true -> findViewById(R.id.iv_movie_portrait)
-                    false -> findViewById(R.id.iv_movie_landscape)
-                }
+                findViewById(R.id.iv_movie_portrait)
             )
 
             setOnClickListener {
@@ -67,8 +66,4 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
     }
 
     override fun getItemCount(): Int = movieList.size
-
-    fun setLocation(b: Boolean) {
-        isLocal = b
-    }
 }

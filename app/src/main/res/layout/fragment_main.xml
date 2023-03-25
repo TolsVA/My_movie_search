@@ -10,19 +10,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:hint="@string/text_hint"
+                android:inputType="text"
+                android:minHeight="48dp"
+                tools:ignore="Autofill,TextContrastCheck,VisualLintTextFieldSize" />
+
+            <Button
+                android:id="@+id/bt_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/search"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,VisualLintBounds" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+<!--            android:layout_weight="1"-->
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_list_horizontal"
+                    android:id="@+id/rv_list_local"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="top"
@@ -30,7 +57,7 @@
                     tools:listitem="@layout/item_movie_portrait" />
 
                 <ProgressBar
-                    android:id="@+id/progress_horizontal"
+                    android:id="@+id/progress_local"
                     style="?android:attr/progressBarStyleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,21 +68,22 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5">
+            android:layout_height="200dp">
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_list_vertical"
+                    android:id="@+id/rv_list_net"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:listitem="@layout/item_movie_landscape" />
+                    android:layout_gravity="top"
+                    android:layout_marginHorizontal="8dp"
+                    tools:listitem="@layout/item_movie_portrait" />
 
                 <ProgressBar
-                    android:id="@+id/progress_vertical"
+                    android:id="@+id/progress_net"
                     style="?android:attr/progressBarStyleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,13 +94,13 @@
     </LinearLayout>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        tools:ignore="ContentDescription,SpeakableTextPresentCheck,ImageContrastCheck" />-->
 
 </FrameLayout>

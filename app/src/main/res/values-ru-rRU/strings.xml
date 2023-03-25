@@ -18,13 +18,13 @@
     <string name="create_contact">Создать контакт</string>
     <string name="cancel">Отмена</string>
     <string name="short_description">Краткое описание</string>
-    <string name="genre">Жанр</string>
+    <string name="genre">Жанр:</string>
     <string name="author">Автор</string>
     <string name="name_movie">Название фильма</string>
 
-    <string name="russian_movie">Русский фильм №</string>
-    <string name="world_film">Mировой фильм №</string>
     <string name="error">Ошибка</string>
     <string name="reload">Перезагрузить</string>
+    <string name="text_hint">Текст запроса</string>
+    <string name="search">Поиск</string>
 
 </resources>

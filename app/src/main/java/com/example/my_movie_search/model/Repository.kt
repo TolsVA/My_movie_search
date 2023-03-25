@@ -1,8 +1,8 @@
 package com.example.my_movie_search.model
 
+import androidx.lifecycle.MutableLiveData
+import com.example.my_movie_search.viewModel.AppState
+
 interface Repository {
-    fun getMovieFromLocalStoragePortWorld(): MutableList<Movie>
-    fun getMovieFromLocalStorageLandWorld(): MutableList<Movie>
-    fun getMovieFromLocalStoragePortraitRus(): MutableList<Movie>
-    fun getMovieFromLocalStorageLandscapeRus(): MutableList<Movie>
+    fun getMovieFromNetStorage(liveDataToObserveNet: MutableLiveData<AppState>, filter: String)
 }
