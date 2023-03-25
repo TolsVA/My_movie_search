@@ -17,12 +17,12 @@
     <string name="create_contact">Create contact</string>
     <string name="cancel">Cancel</string>
     <string name="short_description">Short description</string>
-    <string name="genre">Genre</string>
+    <string name="genre">Genre </string>
     <string name="author">Author</string>
     <string name="name_movie">Name movie</string>
 
-    <string name="russian_movie">Russian movie №</string>
-    <string name="world_film">World film №</string>
     <string name="error">Ошибка</string>
     <string name="reload">Перезагрузить</string>
+    <string name="text_hint">Текст запроса</string>
+    <string name="search">Поиск</string>
 </resources>

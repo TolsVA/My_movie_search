@@ -5,47 +5,27 @@ import androidx.lifecycle.ViewModel
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Repository
 import com.example.my_movie_search.model.RepositoryImpl
-import java.lang.Thread.sleep
 
 class MainViewModel(
-    private val liveDataToObservePortrait: MutableLiveData<AppState> = MutableLiveData(),
-    private val liveDataToObserveLandscape: MutableLiveData<AppState> = MutableLiveData(),
-    private val repositoryImpl: Repository = RepositoryImpl,
+    private val liveDataToObserveLocal: MutableLiveData<AppState> = MutableLiveData(),
+    private val liveDataToObserveNet: MutableLiveData<AppState> = MutableLiveData(),
+    private val repositoryImpl: Repository = RepositoryImpl(),
     private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData()
 ) : ViewModel() {
 
-    fun getLiveDataPortrait() = liveDataToObservePortrait
-    fun getLiveDataLandscape() = liveDataToObserveLandscape
+    fun getLiveDataLocal() = liveDataToObserveLocal
+    fun getLiveDataNet() = liveDataToObserveNet
     fun getLiveDataDetail() = messageDetailFragment
-    fun getMovie(isRus: Boolean) = getDataFromLocalSource(isRus)
+    fun getMovie( filter: String ) = getDataFromNetSource( filter )
+    fun getMovie( movies: MutableList<Movie> ) = getDataFromLocalSource( movies )
 
-    private fun getDataFromLocalSource(isRus: Boolean) {
+    private fun getDataFromLocalSource(movies: MutableList<Movie>) {
+        liveDataToObserveLocal.value = AppState.Loading
+        liveDataToObserveLocal.value = AppState.Success(movies)
+    }
 
-        liveDataToObservePortrait.value = AppState.Loading
-        liveDataToObserveLandscape.value = AppState.Loading
-
-        Thread {
-            sleep(1000)
-            liveDataToObservePortrait.postValue(
-                AppState.Success(
-                    listMovies = when (isRus) {
-                        true -> repositoryImpl.getMovieFromLocalStoragePortraitRus()
-                        false -> repositoryImpl.getMovieFromLocalStoragePortWorld()
-                    }
-                )
-            )
-        }.start()
-
-        Thread {
-            sleep(1500)
-            liveDataToObserveLandscape.postValue(
-                AppState.Success(
-                    listMovies = when (isRus) {
-                        true -> repositoryImpl.getMovieFromLocalStorageLandscapeRus()
-                        false -> repositoryImpl.getMovieFromLocalStorageLandWorld()
-                    }
-                )
-            )
-        }.start()
+    private fun getDataFromNetSource( filter: String ) {
+        liveDataToObserveNet.value = AppState.Loading
+        repositoryImpl.getMovieFromNetStorage(liveDataToObserveNet, filter)
     }
 }
