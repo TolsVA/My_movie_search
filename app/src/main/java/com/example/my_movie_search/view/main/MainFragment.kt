@@ -1,5 +1,7 @@
 package com.example.my_movie_search.view.main
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +10,16 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.databinding.FragmentMainBinding
+import com.example.my_movie_search.model.FILTER_EXTRA
+import com.example.my_movie_search.model.INTENT_FILTER
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.model.MovieService
 import com.example.my_movie_search.view.details.DetailFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
@@ -47,6 +53,16 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            LocalBroadcastManager.getInstance(it).registerReceiver(
+                viewModel.getLoadResultsReceiver(),
+                IntentFilter(INTENT_FILTER)
+            )
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -60,7 +76,16 @@ class MainFragment : Fragment() {
         with(binding) {
             btFilter.setOnClickListener {
                 filter = etFilter.text.toString()
-                viewModel.getMovie(filter)
+                progressNet.show()
+                adapterNet.clearList()
+                context?.let {
+                    it.startService(
+                        Intent(it, MovieService::class.java).putExtra(
+                            FILTER_EXTRA,
+                            filter
+                        )
+                    )
+                }
             }
         }
     }
@@ -90,17 +115,58 @@ class MainFragment : Fragment() {
                     progress.show()
                 }
 
+                is AppState.ResponseEmpty -> {
+                    progress.hide()
+                    progress.showSnackBar(
+                        appState.message,
+                        getString(R.string.ok),
+                        {}
+                    )
+                }
+
                 is AppState.Error -> {
                     progress.hide()
                     progress.showSnackBar(
-                        getString(R.string.error),
+                        when (appState.error.message.toString()) {
+
+                            "java.net.UnknownHostException" -> {
+                                getString(R.string.unknown_host_exception)
+                            }
+
+                            "java.io.FileNotFoundException" -> {
+                                getString(R.string.file_not_found_exception)
+                            }
+
+                            "java.net.MalformedURLException" -> {
+                                getString(R.string.malformed_url_exception)
+                            }
+
+                            "java.net.SocketTimeoutException" -> {
+                                getString(R.string.socket_timeout_exception)
+                            }
+
+                            "java.lang.NullPointerException" -> {
+                                "java.lang.NullPointerException"
+                            }
+
+                            else -> { appState.error.message.toString() }
+                        },
                         getString(R.string.reload),
-                        when(b) {
+                        when (b) {
                             true -> {
                                 { viewModel.getMovie(localListMovies) }
                             }
                             false -> {
-                                { viewModel.getMovie(filter) }
+                                {
+                                    context?.let {
+                                        it.startService(
+                                            Intent(it, MovieService::class.java).putExtra(
+                                                FILTER_EXTRA,
+                                                filter
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         }
                     )
@@ -137,7 +203,7 @@ class MainFragment : Fragment() {
                         movie: Movie,
                         position: Int
                     ) {
-                        when(b) {
+                        when (b) {
                             true -> {
                                 viewModel.getLiveDataDetail().value = movie
 
@@ -150,9 +216,7 @@ class MainFragment : Fragment() {
                                 localListMovies.add(movie)
                                 viewModel.getMovie(localListMovies)
                             }
-
                         }
-
                     }
                 })
             }
@@ -160,7 +224,7 @@ class MainFragment : Fragment() {
     }
 
     private fun getObserver(b: Boolean) = Observer<AppState> {
-        renderData( it, b )
+        renderData(it, b)
     }
 
     override fun onDestroy() {
@@ -168,5 +232,9 @@ class MainFragment : Fragment() {
         _binding = null
         adapterNet.setOnClickItem(null)
         adapterLocal.setOnClickItem(null)
+        context?.let {
+            LocalBroadcastManager.getInstance(it)
+                .unregisterReceiver(viewModel.getLoadResultsReceiver())
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.my_movie_search.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -66,4 +67,10 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
     }
 
     override fun getItemCount(): Int = movieList.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearList() {
+        movieList.clear()
+        notifyDataSetChanged()
+    }
 }

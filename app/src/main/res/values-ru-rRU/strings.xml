@@ -27,4 +27,25 @@
     <string name="text_hint">Текст запроса</string>
     <string name="search">Поиск</string>
 
+    <string name="threads">Threads</string>
+    <string name="in_main_thread">В главном потоке</string>
+    <string name="from_thread">Из потока %d</string>
+    <string name="in_thread">Выводим в потоке %s</string>
+    <string name="calculate_in_thread">Считаем в потоке %s</string>
+    <string name="my_handler_thread">My_Handler_Thread</string>
+    <string name="hello_from_thread_fragment">Hello from ThreadsFragment</string>
+    <string name="calculate">Расчёт</string>
+    <string name="default_number">1</string>
+    <string name="calc_in_thread">Расчёт в потоке</string>
+    <string name="handler_thread">Handler_Thread</string>
+    <string name="service">Service</string>
+    <string name="service_broadcast">Service + Broadcast</string>
+    <string name="response_empty">По вашему запросу нет данных</string>
+    <string name="ok">ОК</string>
+    <string name="unknown_host_exception">Нет сети</string>
+    <string name="file_not_found_exception">Не верный запрос</string>
+    <string name="malformed_url_exception">Не верный URL запроса</string>
+    <string name="socket_timeout_exception">Вышло время ожидания ответа от сервера</string>
+    <string name="error_intent_empty">Намерение пусто</string>
+
 </resources>
