@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.my_movie_search.databinding.FragmentDetailBinding
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.utils.CircleTransformation
 import com.example.my_movie_search.view.mySetText
 import com.example.my_movie_search.viewModel.MainViewModel
 import com.squareup.picasso.Picasso
@@ -43,9 +44,9 @@ class DetailFragment : Fragment() {
 
     private fun renderData(movie: Movie) {
         binding.apply {
-
-            Picasso.with(context)
+            Picasso.get()
                 .load(movie.poster?.url)
+                .transform(CircleTransformation())
                 .into(ivMovieDetail)
 
             tvName.mySetText(movie.name)

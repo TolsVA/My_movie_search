@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.my_movie_search.model
+package com.example.my_movie_search.service
 
 import android.annotation.SuppressLint
 import android.app.IntentService
@@ -28,7 +28,7 @@ const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 const val INTENT_FILTER = "INTENT_FILTER"
 const val REQUEST_ERROR_EXTRA = "REQUEST_ERROR_EXTRA"
 
-class MovieService(name: String = "MovieService") : IntentService(name) {
+class MovieIntentService(name: String = "MovieService") : IntentService(name) {
 
     private val broadcastIntent = Intent(INTENT_FILTER)
 

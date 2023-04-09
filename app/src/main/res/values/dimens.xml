@@ -2,4 +2,8 @@
 <resources>
     <dimen name="scroll">12sp</dimen>
     <dimen name="main_container_text_size">6sp</dimen>
+    <dimen name="text_size_24">24sp</dimen>
+    <dimen name="layout_marginTop">16dp</dimen>
+    <dimen name="min_Height">48dp</dimen>
+    <dimen name="layout_marginHorizontal">8dp</dimen>
 </resources>

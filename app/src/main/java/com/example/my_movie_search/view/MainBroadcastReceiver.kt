@@ -1,4 +1,4 @@
-package com.example.my_movie_search.test
+package com.example.my_movie_search.view
 
 import android.content.BroadcastReceiver
 import android.content.Context

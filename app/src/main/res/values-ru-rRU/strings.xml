@@ -47,5 +47,7 @@
     <string name="malformed_url_exception">Не верный URL запроса</string>
     <string name="socket_timeout_exception">Вышло время ожидания ответа от сервера</string>
     <string name="error_intent_empty">Намерение пусто</string>
+    <string name="server_error">Ошибка сервера</string>
+    <string name="request_error">Ошибка запроса на сервер</string>
 
 </resources>
