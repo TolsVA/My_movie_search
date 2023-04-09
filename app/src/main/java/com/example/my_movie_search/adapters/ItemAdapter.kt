@@ -1,7 +1,6 @@
 package com.example.my_movie_search.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,11 +29,9 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
     }
 
     inner class ItemHolder(item: View) : RecyclerView.ViewHolder(item) {
-        private val context: Context = item.context
         fun bind(movie: Movie, imageView: ImageView) {
-
-            Picasso.with(context)
-                .load( movie.poster?.url )
+            Picasso.get()
+                .load(movie.poster?.url)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(imageView)
         }

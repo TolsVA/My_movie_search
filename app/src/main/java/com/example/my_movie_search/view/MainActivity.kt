@@ -8,7 +8,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.my_movie_search.R
 import com.example.my_movie_search.databinding.ActivityMainBinding
-import com.example.my_movie_search.test.MainBroadcastReceiver
 import com.example.my_movie_search.test.TestThreadFragment
 import com.example.my_movie_search.view.main.MainFragment
 

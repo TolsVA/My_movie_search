@@ -21,7 +21,7 @@
                 android:id="@+id/iv_movie_detail"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/layout_marginTop"
                 android:background="@android:color/transparent"
                 tools:ignore="ContentDescription,ImageContrastCheck" />
 
@@ -29,10 +29,10 @@
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/layout_marginTop"
                 android:gravity="center"
                 android:text="@string/name_movie"
-                android:textSize="24sp"
+                android:textSize="@dimen/text_size_24"
                 android:textStyle="bold"
                 tools:ignore="TextContrastCheck" />
 
@@ -40,10 +40,10 @@
                 android:id="@+id/tv_genre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/layout_marginTop"
                 android:gravity="center"
                 android:text="@string/genre"
-                android:textSize="24sp"
+                android:textSize="@dimen/text_size_24"
                 android:textStyle="bold"
                 tools:ignore="TextContrastCheck" />
 
@@ -51,20 +51,20 @@
                 android:id="@+id/tv_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/layout_marginTop"
                 android:gravity="center"
                 android:text="@string/author"
-                android:textSize="24sp"
+                android:textSize="@dimen/text_size_24"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_short_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/layout_marginTop"
                 android:gravity="center"
                 android:text="@string/short_description"
-                android:textSize="24sp"
+                android:textSize="@dimen/text_size_24"
                 android:textStyle="bold"
                 tools:ignore="TextContrastCheck" />
         </LinearLayout>

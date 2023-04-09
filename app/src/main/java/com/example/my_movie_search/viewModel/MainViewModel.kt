@@ -1,57 +1,69 @@
 package com.example.my_movie_search.viewModel
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.my_movie_search.R
 import com.example.my_movie_search.model.*
-import com.google.gson.Gson
+import com.example.my_movie_search.repository.MoviesRepository
+import com.example.my_movie_search.repository.MoviesRepositoryImpl
+import com.example.my_movie_search.repository.RemoteDataSource
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.IOException
+
+private const val SERVER_ERROR = "SERVER_ERROR"
+private const val REQUEST_ERROR = "REQUEST_ERROR"
+const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 
 class MainViewModel(
     private val liveDataToObserveLocal: MutableLiveData<AppState> = MutableLiveData(),
     private val liveDataToObserveNet: MutableLiveData<AppState> = MutableLiveData(),
-    private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData()
+    private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData(),
+    private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
 ) : ViewModel() {
 
     fun getLiveDataLocal() = liveDataToObserveLocal
     fun getLiveDataNet() = liveDataToObserveNet
     fun getLiveDataDetail() = messageDetailFragment
     fun getMovie(movies: MutableList<Movie>) = getDataFromLocalSource(movies)
+    fun getMovie(filter: String) = getDataFromNetSource(filter)
 
     private fun getDataFromLocalSource(movies: MutableList<Movie>) {
         liveDataToObserveLocal.value = AppState.Loading
         liveDataToObserveLocal.value = AppState.Success(movies)
     }
 
-    fun getLoadResultsReceiver(): BroadcastReceiver {
-        return object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                when (intent.getStringExtra(LOAD_RESULT_EXTRA)) {
+    private fun getDataFromNetSource(filter: String) {
+        liveDataToObserveNet.value = AppState.Loading
+        moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
+    }
 
-                    REQUEST_ERROR_EXTRA -> {
-                        liveDataToObserveNet.value = AppState.Error(
-                            Throwable(intent.getStringExtra(REQUEST_ERROR_EXTRA))
-                        )
-                    }
+    private val callBack = object : Callback<MovieListNet> {
+        @Throws(IOException::class)
+        override fun onResponse(call: Call<MovieListNet>, response: Response<MovieListNet>) {
+            val serverResponse: MovieListNet? = response.body()
 
-                    RESPONSE_EMPTY -> {
-                        liveDataToObserveNet.value = AppState.ResponseEmpty(
-                                context.getString(R.string.response_empty)
-                            )
+            if (response.isSuccessful && serverResponse != null) {
+                liveDataToObserveNet.postValue(
+                    if (serverResponse.docs.size > 0) {
+                        AppState.Success(serverResponse.docs)
+                    } else {
+                        AppState.ResponseEmpty(RESPONSE_EMPTY)
                     }
-
-                    RESPONSE_SUCCESS -> {
-                        Gson().fromJson(
-                            intent.getStringExtra(RESPONSE_SUCCESS),
-                            MovieListNet::class.java
-                        ).let {
-                            liveDataToObserveNet.value = AppState.Success(it.docs)
-                        }
-                    }
-                }
+                )
+            } else {
+                AppState.Error(Throwable(SERVER_ERROR))
             }
+        }
+
+        override fun onFailure(call: Call<MovieListNet>, t: Throwable) {
+            liveDataToObserveNet.postValue(
+                AppState.Error(
+                    Throwable(
+                        t.message ?: REQUEST_ERROR
+                    )
+                )
+            )
         }
     }
 }

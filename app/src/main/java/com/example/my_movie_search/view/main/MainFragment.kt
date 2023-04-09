@@ -1,7 +1,5 @@
 package com.example.my_movie_search.view.main
 
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +8,12 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.databinding.FragmentMainBinding
-import com.example.my_movie_search.model.FILTER_EXTRA
-import com.example.my_movie_search.model.INTENT_FILTER
-import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.model.MovieService
+import com.example.my_movie_search.model.*
 import com.example.my_movie_search.view.details.DetailFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
@@ -53,16 +47,6 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        context?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(
-                viewModel.getLoadResultsReceiver(),
-                IntentFilter(INTENT_FILTER)
-            )
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -78,14 +62,7 @@ class MainFragment : Fragment() {
                 filter = etFilter.text.toString()
                 progressNet.show()
                 adapterNet.clearList()
-                context?.let {
-                    it.startService(
-                        Intent(it, MovieService::class.java).putExtra(
-                            FILTER_EXTRA,
-                            filter
-                        )
-                    )
-                }
+                viewModel.getMovie(filter)
             }
         }
     }
@@ -118,7 +95,7 @@ class MainFragment : Fragment() {
                 is AppState.ResponseEmpty -> {
                     progress.hide()
                     progress.showSnackBar(
-                        appState.message,
+                        getString(R.string.response_empty),
                         getString(R.string.ok),
                         {}
                     )
@@ -128,6 +105,14 @@ class MainFragment : Fragment() {
                     progress.hide()
                     progress.showSnackBar(
                         when (appState.error.message.toString()) {
+
+                            "SERVER_ERROR" -> {
+                                resources.getString(R.string.server_error)
+                            }
+
+                            "REQUEST_ERROR" -> {
+                                resources.getString(R.string.request_error)
+                            }
 
                             "java.net.UnknownHostException" -> {
                                 getString(R.string.unknown_host_exception)
@@ -157,16 +142,7 @@ class MainFragment : Fragment() {
                                 { viewModel.getMovie(localListMovies) }
                             }
                             false -> {
-                                {
-                                    context?.let {
-                                        it.startService(
-                                            Intent(it, MovieService::class.java).putExtra(
-                                                FILTER_EXTRA,
-                                                filter
-                                            )
-                                        )
-                                    }
-                                }
+                                { viewModel.getMovie(filter) }
                             }
                         }
                     )
@@ -232,9 +208,5 @@ class MainFragment : Fragment() {
         _binding = null
         adapterNet.setOnClickItem(null)
         adapterLocal.setOnClickItem(null)
-        context?.let {
-            LocalBroadcastManager.getInstance(it)
-                .unregisterReceiver(viewModel.getLoadResultsReceiver())
-        }
     }
 }
