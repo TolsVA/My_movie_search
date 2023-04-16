@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.my_movie_search.adapters.AdapterItem
+import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.databinding.FragmentDetailBinding
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.utils.CircleTransformation
 import com.example.my_movie_search.view.mySetText
 import com.example.my_movie_search.viewModel.MainViewModel
 import com.squareup.picasso.Picasso
@@ -18,6 +20,10 @@ class DetailFragment : Fragment() {
 
     private val dataModel: MainViewModel by lazy {
         ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
+
+    private val adapter: ItemAdapter by lazy {
+        ItemAdapter()
     }
 
     private var _binding: FragmentDetailBinding? = null
@@ -40,14 +46,40 @@ class DetailFragment : Fragment() {
         }
 
         dataModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
+
     }
 
     private fun renderData(movie: Movie) {
         binding.apply {
             Picasso.get()
                 .load(movie.poster?.url)
-                .transform(CircleTransformation())
+//                .transform(CircleTransformation())
                 .into(ivMovieDetail)
+
+            rvListPersons.layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+
+            rvListPersons.adapter = adapter.apply {
+
+                val listItem: MutableList<AdapterItem> = mutableListOf()
+
+                for (persons in movie.persons) {
+                    listItem.add(persons)
+                }
+
+                addList(listItem)
+                setOnClickItem(object : ItemAdapter.OnClickItem {
+                    override fun onClickItem(
+                        item: AdapterItem,
+                        position: Int
+                    ) {
+
+                    }
+                })
+            }
 
             tvName.mySetText(movie.name)
             movie.genres.forEach {

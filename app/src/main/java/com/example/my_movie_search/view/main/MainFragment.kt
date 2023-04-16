@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.my_movie_search.R
+import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.databinding.FragmentMainBinding
-import com.example.my_movie_search.model.*
+import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.view.details.DetailFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
@@ -27,17 +26,11 @@ class MainFragment : Fragment() {
         ViewModelProvider(requireActivity())[MainViewModel::class.java]
     }
 
-    private val adapterLocal: ItemAdapter by lazy {
-        ItemAdapter()
-    }
-
-    private val adapterNet: ItemAdapter by lazy {
+    private val adapter: ItemAdapter by lazy {
         ItemAdapter()
     }
 
     private var filter = ""
-
-    var localListMovies: MutableList<Movie> = mutableListOf()
 
     private var _binding: FragmentMainBinding? = null
     private val binding
@@ -50,18 +43,17 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val observerLocal = getObserver(true)
-        val observerNet = getObserver(false)
         viewModel.apply {
-            getLiveDataLocal().observe(viewLifecycleOwner, observerLocal)
-            getLiveDataNet().observe(viewLifecycleOwner, observerNet)
+            getLiveDataNet().observe(viewLifecycleOwner) {
+                renderData(it)
+            }
         }
 
         with(binding) {
             btFilter.setOnClickListener {
                 filter = etFilter.text.toString()
                 progressNet.show()
-                adapterNet.clearList()
+                adapter.clearList()
                 viewModel.getMovie(filter)
             }
         }
@@ -75,17 +67,14 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    private fun renderData(appState: AppState, b: Boolean) {
+    private fun renderData(appState: AppState) {
         with(binding) {
-            val progress: ProgressBar = when (b) {
-                true -> progressLocal
-                false -> progressNet
-            }
+            val progress = progressNet
 
             when (appState) {
                 is AppState.Success -> {
                     progress.hide()
-                    setData(appState.listMovies, b)
+                    setData(appState.listMovies)
                 }
 
                 is AppState.Loading -> {
@@ -134,79 +123,57 @@ class MainFragment : Fragment() {
                                 "java.lang.NullPointerException"
                             }
 
-                            else -> { appState.error.message.toString() }
+                            else -> {
+                                appState.error.message.toString()
+                            }
                         },
                         getString(R.string.reload),
-                        when (b) {
-                            true -> {
-                                { viewModel.getMovie(localListMovies) }
-                            }
-                            false -> {
-                                { viewModel.getMovie(filter) }
-                            }
-                        }
+                        { viewModel.getMovie(filter) }
                     )
                 }
+                is AppState.SuccessPersons -> TODO()
             }
         }
     }
 
-    private fun setData(listMovies: MutableList<Movie>, b: Boolean) {
+    private fun setData(listMovies: MutableList<Movie>) {
         binding.apply {
-            when (b) {
-                true -> {
-                    localListMovies = listMovies
-                    rvListLocal.layoutManager = LinearLayoutManager(
-                        context,
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                    ).also { rvListLocal.adapter = adapterLocal }
-                    adapterLocal
+            rvListNet.layoutManager = GridLayoutManager(
+                context,
+                3,
+                GridLayoutManager.VERTICAL,
+                false
+            )
+
+            rvListNet.adapter = adapter.apply {
+
+                val listItem: MutableList<AdapterItem> = mutableListOf()
+
+                for (movie in listMovies) {
+                    listItem.add(movie)
                 }
 
-                false -> {
-                    rvListNet.layoutManager = LinearLayoutManager(
-                        context,
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                    ).also { rvListNet.adapter = adapterNet }
-                    adapterNet
-                }
-            }.apply {
-                addMovieList(listMovies)
+                addList(listItem)
                 setOnClickItem(object : OnClickItem {
                     override fun onClickItem(
-                        movie: Movie,
+                        item: AdapterItem,
                         position: Int
                     ) {
-                        when (b) {
-                            true -> {
-                                viewModel.getLiveDataDetail().value = movie
+                        viewModel.getLiveDataDetail().value = item as Movie
 
-                                parentFragmentManager.beginTransaction()
-                                    .replace(R.id.container, DetailFragment.newInstance())
-                                    .addToBackStack("")
-                                    .commit()
-                            }
-                            false -> {
-                                localListMovies.add(movie)
-                                viewModel.getMovie(localListMovies)
-                            }
-                        }
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.container, DetailFragment.newInstance())
+                            .addToBackStack("")
+                            .commit()
                     }
                 })
             }
         }
     }
 
-    private fun getObserver(b: Boolean) = Observer<AppState> {
-        renderData(it, b)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        adapterNet.setOnClickItem(null)
-        adapterLocal.setOnClickItem(null)
+        adapter.setOnClickItem(null)
     }
 }
