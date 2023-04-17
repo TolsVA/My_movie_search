@@ -10,13 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
-import com.example.my_movie_search.databinding.FragmentDetailBinding
+import com.example.my_movie_search.databinding.FragmentDetailMovieBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.view.mySetText
 import com.example.my_movie_search.viewModel.MainViewModel
 import com.squareup.picasso.Picasso
 
-class DetailFragment : Fragment() {
+class DetailMovieFragment : Fragment() {
 
     private val dataModel: MainViewModel by lazy {
         ViewModelProvider(requireActivity())[MainViewModel::class.java]
@@ -26,7 +26,7 @@ class DetailFragment : Fragment() {
         ItemAdapter()
     }
 
-    private var _binding: FragmentDetailBinding? = null
+    private var _binding: FragmentDetailMovieBinding? = null
 
     private val binding
         get() = _binding!!
@@ -35,7 +35,7 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentDetailMovieBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -100,6 +100,6 @@ class DetailFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = DetailFragment()
+        fun newInstance() = DetailMovieFragment()
     }
 }

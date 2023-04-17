@@ -94,6 +94,6 @@ class DetailPersonsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = DetailFragment()
+        fun newInstance() = DetailMovieFragment()
     }
 }

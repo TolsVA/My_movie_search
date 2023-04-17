@@ -34,7 +34,7 @@ class MainViewModel(
     fun getPersonsMovie(persons: Persons?) {
         id = persons?.id
         messageMoviesPersonsFragment.value = AppState.Loading
-//        moviesRepositoryImpl.getMoviesPersonsFromSQLite(id, callBackMPLocal)
+        moviesRepositoryImpl.getMoviesPersonsFromSQLite(id, callBackMPLocal)
     }
 
 
@@ -42,6 +42,7 @@ class MainViewModel(
         this.filter = filter
         liveDataToObserveNet.value = AppState.Loading
         moviesRepositoryImpl.getMovieFromSQLite(filter, callBackLocal)
+//        moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
     }
 
 
@@ -81,7 +82,7 @@ class MainViewModel(
                     moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
                 }
             } else {
-                getDataFromNetSource(filter)
+                moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
             }
         }
 
@@ -90,10 +91,10 @@ class MainViewModel(
         }
     }
 
-    private val callBackMPLocal = object : Callback<MutableList<Persons>> {
-        override fun onSuccess(result: MutableList<Persons>) {
-            messageMoviesPersonsFragment.postValue(AppState.SuccessPersons(result))
-            moviesRepositoryImpl.getMovieFromNetServer(id!!, callBack)
+    private val callBackMPLocal = object : Callback<MutableList<Movie>> {
+        override fun onSuccess(result: MutableList<Movie>) {
+            messageMoviesPersonsFragment.postValue(AppState.Success(result))
+//            moviesRepositoryImpl.getMovieFromNetServer(id!!, callBack)
         }
 
         override fun onError(error: Throwable?) {

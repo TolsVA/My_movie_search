@@ -3,25 +3,26 @@ package com.example.my_movie_search.model.sqlite
 import android.database.Cursor
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.core.database.sqlite.transaction
 import com.example.my_movie_search.model.*
 
 class SQLiteManager(private val db: SQLiteDatabase) {
 
-//    fun getMoviesFromDb2(filter: String): MutableList<Movie> {
-//        db.delete(MovieTable.TABLE_NAME, null, null);
-//        db.delete(PersonsTable.TABLE_NAME, null, null);
-//        db.delete(MoviePersonsSettingsTable.TABLE_NAME, null, null);
-//        db.delete(TrailersTable.TABLE_NAME, null, null);
-//        db.delete(MovieTrailersSettingsTable.TABLE_NAME, null, null);
-//        db.delete(CountriesTable.TABLE_NAME, null, null);
-//        db.delete(MovieCountriesSettingsTable.TABLE_NAME, null, null);
-//        db.delete(GenresTable.TABLE_NAME, null, null);
-//        db.delete(MovieGenresSettingsTable.TABLE_NAME, null, null);
-//
-//        return mutableListOf()
-//    }
+    fun getMoviesFromDb2(filter: String): MutableList<Movie> {
+        db.delete(MovieTable.TABLE_NAME, null, null);
+        db.delete(PersonsTable.TABLE_NAME, null, null);
+        db.delete(MoviePersonsSettingsTable.TABLE_NAME, null, null);
+        db.delete(TrailersTable.TABLE_NAME, null, null);
+        db.delete(MovieTrailersSettingsTable.TABLE_NAME, null, null);
+        db.delete(CountriesTable.TABLE_NAME, null, null);
+        db.delete(MovieCountriesSettingsTable.TABLE_NAME, null, null);
+        db.delete(GenresTable.TABLE_NAME, null, null);
+        db.delete(MovieGenresSettingsTable.TABLE_NAME, null, null);
+
+        return mutableListOf()
+    }
 
     //все фил в баз -> "" или выб по -> filter
     fun getMoviesFromDb(filter: String): MutableList<Movie> {
@@ -112,9 +113,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                         }
                     )
                 } catch (e: SQLiteConstraintException) {
-                    val appException = StorageException()
-                    appException.initCause(e)
-                    throw appException
+//                    val appException = StorageException()
+//                    appException.initCause(e)
+//                    throw appException
                 }
 
                 for (person in movie.persons) {
@@ -135,9 +136,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             }
                         )
                     } catch (e: SQLiteConstraintException) {
-                        val appException = StorageException()
-                        appException.initCause(e)
-                        throw appException
+//                        val appException = StorageException()
+//                        appException.initCause(e)
+//                        throw appException
                     }
 
                     try {
@@ -156,9 +157,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             )
                         )
                     } catch (e: SQLiteConstraintException) {
-                        val appException = StorageException()
-                        appException.initCause(e)
-                        throw appException
+//                        val appException = StorageException()
+//                        appException.initCause(e)
+//                        throw appException
                     }
                 }
 
@@ -180,9 +181,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                                 }
                             )
                         } catch (e: SQLiteConstraintException) {
-                            val appException = StorageException()
-                            appException.initCause(e)
-                            throw appException
+//                            val appException = StorageException()
+//                            appException.initCause(e)
+//                            throw appException
                         }
 
                         try {
@@ -201,9 +202,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                                 )
                             )
                         } catch (e: SQLiteConstraintException) {
-                            val appException = StorageException()
-                            appException.initCause(e)
-                            throw appException
+//                            val appException = StorageException()
+//                            appException.initCause(e)
+//                            throw appException
                         }
                     }
                 }
@@ -224,9 +225,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             }
                         )
                     } catch (e: SQLiteConstraintException) {
-                        val appException = StorageException()
-                        appException.initCause(e)
-                        throw appException
+//                        val appException = StorageException()
+//                        appException.initCause(e)
+//                        throw appException
                     }
 
                     try {
@@ -243,9 +244,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             )
                         )
                     } catch (e: SQLiteConstraintException) {
-                        val appException = StorageException()
-                        appException.initCause(e)
-                        throw appException
+//                        val appException = StorageException()
+//                        appException.initCause(e)
+//                        throw appException
                     }
                 }
 
@@ -265,9 +266,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             }
                         )
                     } catch (e: SQLiteConstraintException) {
-                        val appException = StorageException()
-                        appException.initCause(e)
-                        throw appException
+//                        val appException = StorageException()
+//                        appException.initCause(e)
+//                        throw appException
                     }
 
                     try {
@@ -284,9 +285,9 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             )
                         )
                     } catch (e: SQLiteConstraintException) {
-                        val appException = StorageException()
-                        appException.initCause(e)
-                        throw appException
+//                        val appException = StorageException()
+//                        appException.initCause(e)
+//                        throw appException
                     }
                 }
             }
@@ -311,7 +312,8 @@ class SQLiteManager(private val db: SQLiteDatabase) {
     private fun getMovie(cursor: Cursor): MutableList<Movie> {
         val movies = mutableListOf<Movie>()
         cursor.use {
-            if (cursor.count == 0) throw AuthException()
+            Log.d("MyLog", cursor.toString())
+            if (cursor.count == 0) movies
 
             while (cursor.moveToNext()) {
                 val idRow = cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID_ROW))

@@ -13,7 +13,7 @@ import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.view.details.DetailFragment
+import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
 import com.example.my_movie_search.view.showSnackBar
@@ -162,7 +162,7 @@ class MainFragment : Fragment() {
                         viewModel.getLiveDataDetail().value = item as Movie
 
                         parentFragmentManager.beginTransaction()
-                            .replace(R.id.container, DetailFragment.newInstance())
+                            .replace(R.id.container, DetailMovieFragment.newInstance())
                             .addToBackStack("")
                             .commit()
                     }
