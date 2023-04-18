@@ -1,9 +1,14 @@
 package com.example.my_movie_search.repository
 
+import android.os.Handler
+import android.os.HandlerThread
+import com.example.my_movie_search.R
+import com.example.my_movie_search.app.App
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.MovieList
 import com.example.my_movie_search.repository.retrofit.RemoteDataSource
 import com.example.my_movie_search.view.MainActivity
+import java.util.concurrent.Executor
 
 class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : MoviesRepository {
 

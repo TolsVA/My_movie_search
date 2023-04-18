@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -18,15 +19,15 @@ import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.model.sqlite.SQLiteHelper
 import com.example.my_movie_search.model.sqlite.SQLiteManager
+import com.example.my_movie_search.view.details.DetailMovieFragment
+import com.example.my_movie_search.view.details.DetailPersonsFragment
 import com.example.my_movie_search.view.main.MainFragment
 
 class MainActivity : AppCompatActivity(), Navigator {
     private lateinit var binding: ActivityMainBinding
 
     companion object {
-        private val handlerThread: HandlerThread by lazy {
-            HandlerThread(App.appInstance.getString(R.string.my_handler_thread))
-        }
+        private lateinit var handlerThread: HandlerThread
 
         fun getHandler(): Handler {
             return Handler(handlerThread.looper)
@@ -47,7 +48,12 @@ class MainActivity : AppCompatActivity(), Navigator {
         get() = supportFragmentManager.findFragmentById(R.id.container)!!
 
     private val fragmentListener = object : FragmentManager.FragmentLifecycleCallbacks() {
-        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+        override fun onFragmentViewCreated(
+            fm: FragmentManager,
+            f: Fragment,
+            v: View,
+            savedInstanceState: Bundle?
+        ) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
 //            updateUi()
         }
@@ -55,7 +61,9 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handlerThread.start()
+        handlerThread = HandlerThread(
+            App.appInstance.getString(R.string.my_handler_thread)
+        ).also { it.start() }
 
         binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
@@ -75,6 +83,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentListener)
         handlerThread.looper.quit()
         db.close()
+        Log.d("MyLog", "onDestroy")
         super.onDestroy()
 
     }
@@ -95,11 +104,11 @@ class MainActivity : AppCompatActivity(), Navigator {
 //    }
 
     override fun showDetailPersonsScreen(persons: Persons) {
-        TODO("Not yet implemented")
+        launchFragment(DetailPersonsFragment.newInstance())
     }
 
     override fun showDetailMovieScreen(movie: Movie) {
-        TODO("Not yet implemented")
+        launchFragment(DetailMovieFragment())
     }
 
     override fun goBack() {

@@ -1,9 +1,13 @@
 package com.example.my_movie_search.view.details
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,10 +30,23 @@ class DetailMovieFragment : Fragment() {
         ItemAdapter()
     }
 
+    private var movie: Movie? = null
+
     private var _binding: FragmentDetailMovieBinding? = null
 
     private val binding
         get() = _binding!!
+
+    @Suppress("DEPRECATION")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        movie = savedInstanceState?.getParcelable(KEY_MOVIE)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(KEY_MOVIE, movie)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,13 +57,11 @@ class DetailMovieFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         val observer = Observer<Movie> { movie ->
+            this.movie = movie
             renderData(movie)
         }
-
         dataModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
-
     }
 
     private fun renderData(movie: Movie) {
@@ -100,6 +115,19 @@ class DetailMovieFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = DetailMovieFragment()
+        @JvmStatic
+        private val ARG_MOVIE = "ARG_MOVIE"
+
+        @JvmStatic
+        private val KEY_MOVIE = "KEY_MOVIE"
+
+        //        fun newInstance() = DetailMovieFragment()
+        fun newInstance(movie: Movie): DetailMovieFragment {
+            val args = Bundle()
+            args.putParcelable(ARG_MOVIE, movie)
+            val fragment = DetailMovieFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

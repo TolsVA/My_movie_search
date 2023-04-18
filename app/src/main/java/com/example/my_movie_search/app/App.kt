@@ -1,6 +1,8 @@
 package com.example.my_movie_search.app
 
 import android.app.Application
+import com.example.my_movie_search.model.sqlite.SQLiteHelper
+import com.example.my_movie_search.model.sqlite.SQLiteManager
 
 class App : Application() {
 
@@ -16,7 +18,7 @@ class App : Application() {
 //        }
 //
 //        private val managerSQLite: SQLiteManager by lazy {
-//            SQLiteManager(db.writableDatabase)
+//            SQLiteManager(db.use { it.writableDatabase })
 //        }
 //
 //        fun getSQLiteDb(): SQLiteManager = managerSQLite

@@ -11,9 +11,9 @@ import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
+import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
 import com.example.my_movie_search.view.showSnackBar
@@ -37,7 +37,19 @@ class MainFragment : Fragment() {
         get() = _binding!!
 
     companion object {
+        @JvmStatic private val KEY_FILTER = "KEY_FILTER"
+
         fun newInstance() = MainFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        filter = savedInstanceState?.getString(KEY_FILTER) ?: ""
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_FILTER, filter)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -159,12 +171,16 @@ class MainFragment : Fragment() {
                         item: AdapterItem,
                         position: Int
                     ) {
-                        viewModel.getLiveDataDetail().value = item as Movie
+                        (item as Movie).let {
+                            viewModel.getLiveDataDetail().value = it
+                            navigator().showDetailMovieScreen(it)
+                        }
 
-                        parentFragmentManager.beginTransaction()
-                            .replace(R.id.container, DetailMovieFragment.newInstance())
-                            .addToBackStack("")
-                            .commit()
+
+//                        parentFragmentManager.beginTransaction()
+//                            .replace(R.id.container, DetailMovieFragment.newInstance())
+//                            .addToBackStack("")
+//                            .commit()
                     }
                 })
             }

@@ -312,7 +312,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
     private fun getMovie(cursor: Cursor): MutableList<Movie> {
         val movies = mutableListOf<Movie>()
         cursor.use {
-            Log.d("MyLog", cursor.toString())
+//            Log.d("MyLog", cursor.toString())
             if (cursor.count == 0) movies
 
             while (cursor.moveToNext()) {
