@@ -1,5 +1,7 @@
 package com.example.my_movie_search.viewModel
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_search.model.*
@@ -17,7 +19,6 @@ const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 
 class MainViewModel(
     private val liveDataToObserveNet: MutableLiveData<AppState> = MutableLiveData(),
-    private val messageMoviesPersonsFragment: MutableLiveData<AppState> = MutableLiveData(),
     private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
 ) : ViewModel() {
 
@@ -25,14 +26,11 @@ class MainViewModel(
     fun getLiveDataNet() = liveDataToObserveNet
     fun getMovie(filter: String) = getDataFromNetSource(filter)
 
-
     private fun getDataFromNetSource(filter: String) {
         this.filter = filter
         liveDataToObserveNet.value = AppState.Loading
         moviesRepositoryImpl.getMovieFromSQLite(filter, callBackLocal)
-//        moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
     }
-
 
     private val callBack = object : retrofit2.Callback<MovieList> {
         @Throws(IOException::class)
@@ -66,27 +64,12 @@ class MainViewModel(
         override fun onSuccess(result: MutableList<Movie>) {
             if (result.size > 0) {
                 liveDataToObserveNet.postValue(AppState.Success(result))
-                if (result.size < 10) {
-                    moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
-                }
-            } else {
-                moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
             }
+            moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
         }
 
         override fun onError(error: Throwable?) {
-
-        }
-    }
-
-    private val callBackMPLocal = object : Callback<MutableList<Movie>> {
-        override fun onSuccess(result: MutableList<Movie>) {
-            messageMoviesPersonsFragment.postValue(AppState.Success(result))
-//            moviesRepositoryImpl.getMovieFromNetServer(id!!, callBack)
-        }
-
-        override fun onError(error: Throwable?) {
-
+            TODO()
         }
     }
 }

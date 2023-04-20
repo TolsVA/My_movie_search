@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,11 +25,11 @@ import com.example.my_movie_search.viewModel.MainViewModel
 class MainFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private val detailViewModel: DetailViewModel by lazy {
-        ViewModelProvider(requireActivity())[DetailViewModel::class.java]
+        ViewModelProvider(this)[DetailViewModel::class.java]
     }
 
     private val adapter: ItemAdapter by lazy {
@@ -37,9 +38,28 @@ class MainFragment : Fragment() {
 
     private var filter = ""
 
+    private var movies = mutableListOf<Movie>()
+
     private var _binding: FragmentMainBinding? = null
     private val binding
         get() = _binding!!
+
+    companion object {
+        @JvmStatic
+        private val ARG_FILTER = "ARG_FILTER"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            filter = savedInstanceState.getString(ARG_FILTER).toString()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ARG_FILTER, filter)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,7 +107,7 @@ class MainFragment : Fragment() {
                     progress.showSnackBar(
                         getString(R.string.response_empty),
                         getString(R.string.ok),
-                        {}
+                        { mainViewModel.getMovie(filter) }
                     )
                 }
 
@@ -137,6 +157,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setData(listMovies: MutableList<Movie>) {
+        movies = listMovies
         binding.apply {
             rvListNet.layoutManager = GridLayoutManager(
                 context,
@@ -161,7 +182,7 @@ class MainFragment : Fragment() {
                     ) {
                         (item as Movie).let {
                             detailViewModel.getLiveDataDetail().value = it
-                            navigator().showDetailMovieScreen()
+                            navigator().showDetailMovieScreen(it)
                         }
                     }
                 })

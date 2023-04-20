@@ -14,8 +14,8 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import com.example.my_movie_search.R
 import com.example.my_movie_search.app.App
 import com.example.my_movie_search.contract.CustomAction
@@ -24,6 +24,7 @@ import com.example.my_movie_search.contract.HasCustomTitle
 import com.example.my_movie_search.contract.Navigator
 import com.example.my_movie_search.contract.ResultListener
 import com.example.my_movie_search.databinding.ActivityMainBinding
+import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.model.sqlite.SQLiteHelper
 import com.example.my_movie_search.model.sqlite.SQLiteManager
@@ -32,6 +33,7 @@ import com.example.my_movie_search.view.details.DetailPersonsFragment
 import com.example.my_movie_search.view.main.MainFragment
 
 class MainActivity : AppCompatActivity(), Navigator {
+
     private lateinit var binding: ActivityMainBinding
 
     companion object {
@@ -155,7 +157,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         launchFragment(DetailPersonsFragment.newInstance())
     }
 
-    override fun showDetailMovieScreen() {
+    override fun showDetailMovieScreen(movie: Movie) {
         launchFragment(DetailMovieFragment.newInstance())
     }
 
@@ -184,10 +186,10 @@ class MainActivity : AppCompatActivity(), Navigator {
     ) {
         supportFragmentManager.setFragmentResultListener(
             clazz.name,
-            owner,
-            FragmentResultListener { key, bundle ->
-                listener.invoke(bundle.getParcelable(KEY_RESULT)!!)
-            })
+            owner
+        ) { _, bundle ->
+            listener.invoke(bundle.getParcelable(KEY_RESULT)!!)
+        }
     }
 
     private fun launchFragment(fragment: Fragment) {
