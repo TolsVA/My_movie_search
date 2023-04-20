@@ -16,33 +16,14 @@ private const val REQUEST_ERROR = "REQUEST_ERROR"
 const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 
 class MainViewModel(
-    private val liveDataToObserveLocal: MutableLiveData<AppState> = MutableLiveData(),
     private val liveDataToObserveNet: MutableLiveData<AppState> = MutableLiveData(),
-    private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData(),
     private val messageMoviesPersonsFragment: MutableLiveData<AppState> = MutableLiveData(),
-    private val messageDetailPersonsFragment: MutableLiveData<Persons> = MutableLiveData(),
     private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
-
-//            private val liveDataToObserveLocal: MutableLiveData<AppState<T>> = MutableLiveData(),
-//    private val liveDataToObserveNet: MutableLiveData<AppState<MutableList<Movie>>> = MutableLiveData(),
-//    private val messageDetailFragment: MutableLiveData<AppState<Movie>> = MutableLiveData(),
-//    private val messageMoviesPersonsFragment: MutableLiveData<AppState> = MutableLiveData(),
-//    private val messageDetailPersonsFragment: MutableLiveData<Persons> = MutableLiveData(),
-//    private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
 ) : ViewModel() {
 
     var filter: String = ""
-    var id: Long? = null
     fun getLiveDataNet() = liveDataToObserveNet
-    fun getLiveDataDetail() = messageDetailFragment
     fun getMovie(filter: String) = getDataFromNetSource(filter)
-    fun getLiveDataDetailPersons() = messageDetailPersonsFragment
-    fun getLiveDataMoviesPersons() = messageMoviesPersonsFragment
-    fun getPersonsMovie(persons: Persons?) {
-        id = persons?.id
-        messageMoviesPersonsFragment.value = AppState.Loading
-        moviesRepositoryImpl.getMoviesPersonsFromSQLite(id, callBackMPLocal)
-    }
 
 
     private fun getDataFromNetSource(filter: String) {

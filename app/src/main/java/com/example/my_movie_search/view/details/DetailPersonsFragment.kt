@@ -11,12 +11,11 @@ import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.databinding.FragmentDetailPersonsBinding
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.viewModel.AppState
-import com.example.my_movie_search.viewModel.MainViewModel
 import com.squareup.picasso.Picasso
 
 class DetailPersonsFragment : Fragment() {
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    private val detailPersonsViewModel: DetailPersonsViewModel by lazy {
+        ViewModelProvider(requireActivity())[DetailPersonsViewModel::class.java]
     }
 
     private val adapter: ItemAdapter by lazy {
@@ -38,10 +37,10 @@ class DetailPersonsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewModel.apply {
+        detailPersonsViewModel.apply {
             getLiveDataDetailPersons().observe(viewLifecycleOwner) {
                 renderData(it)
-                viewModel.getPersonsMovie(it)
+                detailPersonsViewModel.getPersonsMovie(it)
             }
             getLiveDataMoviesPersons().observe(viewLifecycleOwner) {
                 renderData(it)

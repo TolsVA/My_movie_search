@@ -14,6 +14,7 @@ import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.view.details.DetailViewModel
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
 import com.example.my_movie_search.view.showSnackBar
@@ -22,8 +23,12 @@ import com.example.my_movie_search.viewModel.MainViewModel
 
 class MainFragment : Fragment() {
 
-    private val viewModel: MainViewModel by lazy {
+    private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
+
+    private val detailViewModel: DetailViewModel by lazy {
+        ViewModelProvider(requireActivity())[DetailViewModel::class.java]
     }
 
     private val adapter: ItemAdapter by lazy {
@@ -39,7 +44,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.apply {
+        mainViewModel.apply {
             getLiveDataNet().observe(viewLifecycleOwner) {
                 renderData(it)
             }
@@ -50,7 +55,7 @@ class MainFragment : Fragment() {
                 filter = etFilter.text.toString()
                 progressNet.show()
                 adapter.clearList()
-                viewModel.getMovie(filter)
+                mainViewModel.getMovie(filter)
             }
         }
     }
@@ -124,10 +129,9 @@ class MainFragment : Fragment() {
                             }
                         },
                         getString(R.string.reload),
-                        { viewModel.getMovie(filter) }
+                        { mainViewModel.getMovie(filter) }
                     )
                 }
-                is AppState.SuccessPersons -> TODO()
             }
         }
     }
@@ -156,7 +160,7 @@ class MainFragment : Fragment() {
                         position: Int
                     ) {
                         (item as Movie).let {
-                            viewModel.getLiveDataDetail().value = it
+                            detailViewModel.getLiveDataDetail().value = it
                             navigator().showDetailMovieScreen()
                         }
                     }

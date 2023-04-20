@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,13 +19,16 @@ import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailMovieBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.view.mySetText
-import com.example.my_movie_search.viewModel.MainViewModel
 import com.squareup.picasso.Picasso
 
 class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
-    private val dataModel: MainViewModel by lazy {
-        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    private val detailViewModel: DetailViewModel by lazy {
+        ViewModelProvider(requireActivity())[DetailViewModel::class.java]
+    }
+
+    private val detailPersonsViewModel: DetailPersonsViewModel by lazy {
+        ViewModelProvider(requireActivity())[DetailPersonsViewModel::class.java]
     }
 
     private val adapter: ItemAdapter by lazy {
@@ -48,19 +52,35 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
         val observer = Observer<Movie> { movie ->
             renderData(movie)
         }
-        dataModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
+        detailViewModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
     }
 
     override fun getTitleRes(): Int = R.string.detailing
 
-    override fun getCustomAction(): CustomAction {
-        return CustomAction(
-            iconRes = R.drawable.ic_done,
-            textRes = R.string.done,
-            onCustomAction = Runnable {
-                onConfirmPressed()
-            }
+    override fun getCustomAction(): MutableList<CustomAction> {
+        val customActionList = mutableListOf<CustomAction>()
+
+        customActionList.add(
+            CustomAction(
+                iconRes = R.drawable.settings,
+                textRes = R.string.settings,
+                onCustomAction = Runnable {
+                    Toast.makeText(requireContext(), "Пупка", Toast.LENGTH_SHORT).show()
+                }
+            )
         )
+
+        customActionList.add(
+            CustomAction(
+                iconRes = R.drawable.ic_done,
+                textRes = R.string.search,
+                onCustomAction = Runnable {
+                    onConfirmPressed()
+                }
+            )
+        )
+
+        return customActionList
     }
 
     private fun onConfirmPressed() {

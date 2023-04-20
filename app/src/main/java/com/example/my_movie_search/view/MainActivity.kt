@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Parcelable
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -26,7 +24,6 @@ import com.example.my_movie_search.contract.HasCustomTitle
 import com.example.my_movie_search.contract.Navigator
 import com.example.my_movie_search.contract.ResultListener
 import com.example.my_movie_search.databinding.ActivityMainBinding
-import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.model.sqlite.SQLiteHelper
 import com.example.my_movie_search.model.sqlite.SQLiteManager
@@ -34,12 +31,12 @@ import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.details.DetailPersonsFragment
 import com.example.my_movie_search.view.main.MainFragment
 
-
 class MainActivity : AppCompatActivity(), Navigator {
     private lateinit var binding: ActivityMainBinding
 
     companion object {
-        @JvmStatic private val KEY_RESULT = "RESULT"
+        @JvmStatic
+        private val KEY_RESULT = "RESULT"
 
         private lateinit var handlerThread: HandlerThread
 
@@ -98,6 +95,11 @@ class MainActivity : AppCompatActivity(), Navigator {
         return true
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
+    }
+
     private fun updateUi() {
         val fragment = currentFragment
 
@@ -122,18 +124,22 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    private fun createCustomToolbarAction(action: CustomAction) {
+    private fun createCustomToolbarAction(actions: MutableList<CustomAction>) {
         binding.toolbar.menu.clear()
 
-        val iconDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(this, action.iconRes)!!)
-        iconDrawable.setTint(Color.WHITE)
+        for (action in actions) {
+            val iconDrawable =
+                DrawableCompat.wrap(ContextCompat.getDrawable(this, action.iconRes)!!)
+            iconDrawable.setTint(Color.WHITE)
 
-        val menuItem = binding.toolbar.menu.add(action.textRes)
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        menuItem.icon = iconDrawable
-        menuItem.setOnMenuItemClickListener {
-            action.onCustomAction.run()
-            return@setOnMenuItemClickListener true
+            val menuItem = binding.toolbar.menu.add(action.textRes)
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            menuItem.icon = iconDrawable
+
+            menuItem.setOnMenuItemClickListener {
+                action.onCustomAction.run()
+                return@setOnMenuItemClickListener true
+            }
         }
     }
 
@@ -162,13 +168,26 @@ class MainActivity : AppCompatActivity(), Navigator {
     }
 
     override fun <T : Parcelable> publishResult(result: T) {
-        supportFragmentManager.setFragmentResult(result.javaClass.name, bundleOf(KEY_RESULT to result))
+        supportFragmentManager.setFragmentResult(
+            result.javaClass.name,
+            bundleOf(
+                KEY_RESULT to result
+            )
+        )
     }
 
-    override fun <T : Parcelable> listenResult(clazz: Class<T>, owner: LifecycleOwner, listener: ResultListener<T>) {
-        supportFragmentManager.setFragmentResultListener(clazz.name, owner, FragmentResultListener { key, bundle ->
-            listener.invoke(bundle.getParcelable(KEY_RESULT)!!)
-        })
+    @Suppress("DEPRECATION")
+    override fun <T : Parcelable> listenResult(
+        clazz: Class<T>,
+        owner: LifecycleOwner,
+        listener: ResultListener<T>
+    ) {
+        supportFragmentManager.setFragmentResultListener(
+            clazz.name,
+            owner,
+            FragmentResultListener { key, bundle ->
+                listener.invoke(bundle.getParcelable(KEY_RESULT)!!)
+            })
     }
 
     private fun launchFragment(fragment: Fragment) {

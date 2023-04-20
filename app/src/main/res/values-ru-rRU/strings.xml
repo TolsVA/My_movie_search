@@ -52,5 +52,6 @@
     <string name="movie_search">Поиск фильмов</string>
     <string name="done">Сохранить и выйти</string>
     <string name="detailing">Детализация</string>
+    <string name="settings">Настройки</string>
 
 </resources>
