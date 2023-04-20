@@ -17,8 +17,8 @@ interface Navigator {
     fun showDetailPersonsScreen(persons: Persons)
 //    fun showDetailPersonsScreen()
 
-    fun showDetailMovieScreen(movie: Movie)
-//    fun showDetailMovieScreen()
+//    fun showDetailMovieScreen(movie: Movie)
+    fun showDetailMovieScreen()
 
     fun goBack()
 

@@ -36,22 +36,6 @@ class MainFragment : Fragment() {
     private val binding
         get() = _binding!!
 
-    companion object {
-        @JvmStatic private val KEY_FILTER = "KEY_FILTER"
-
-        fun newInstance() = MainFragment()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        filter = savedInstanceState?.getString(KEY_FILTER) ?: ""
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(KEY_FILTER, filter)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -173,14 +157,8 @@ class MainFragment : Fragment() {
                     ) {
                         (item as Movie).let {
                             viewModel.getLiveDataDetail().value = it
-                            navigator().showDetailMovieScreen(it)
+                            navigator().showDetailMovieScreen()
                         }
-
-
-//                        parentFragmentManager.beginTransaction()
-//                            .replace(R.id.container, DetailMovieFragment.newInstance())
-//                            .addToBackStack("")
-//                            .commit()
                     }
                 })
             }

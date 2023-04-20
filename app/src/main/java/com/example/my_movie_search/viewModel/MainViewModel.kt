@@ -22,6 +22,13 @@ class MainViewModel(
     private val messageMoviesPersonsFragment: MutableLiveData<AppState> = MutableLiveData(),
     private val messageDetailPersonsFragment: MutableLiveData<Persons> = MutableLiveData(),
     private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
+
+//            private val liveDataToObserveLocal: MutableLiveData<AppState<T>> = MutableLiveData(),
+//    private val liveDataToObserveNet: MutableLiveData<AppState<MutableList<Movie>>> = MutableLiveData(),
+//    private val messageDetailFragment: MutableLiveData<AppState<Movie>> = MutableLiveData(),
+//    private val messageMoviesPersonsFragment: MutableLiveData<AppState> = MutableLiveData(),
+//    private val messageDetailPersonsFragment: MutableLiveData<Persons> = MutableLiveData(),
+//    private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
 ) : ViewModel() {
 
     var filter: String = ""

@@ -48,4 +48,7 @@
     <string name="error_intent_empty">Error intent empty</string>
     <string name="server_error">Server error</string>
     <string name="request_error">Request error</string>
+    <string name="movie_search">Movie search</string>
+    <string name="done">save_and_exit</string>
+    <string name="detailing">Detailing</string>
 </resources>
