@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
@@ -23,13 +21,9 @@ import com.squareup.picasso.Picasso
 
 class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
-    private val detailViewModel: DetailViewModel by lazy {
-        ViewModelProvider(requireActivity())[DetailViewModel::class.java]
-    }
-
-    private val detailPersonsViewModel: DetailPersonsViewModel by lazy {
-        ViewModelProvider(requireActivity())[DetailPersonsViewModel::class.java]
-    }
+//    private val detailMovieViewModel: DetailMovieViewModel by lazy {
+//        ViewModelProvider(requireActivity())[DetailMovieViewModel::class.java]
+//    }
 
     private val adapter: ItemAdapter by lazy {
         ItemAdapter()
@@ -40,6 +34,20 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
     private val binding
         get() = _binding!!
 
+    private lateinit var movie: Movie
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION")
+        movie = savedInstanceState?.getParcelable(ARG_MOVIE)
+            ?:arguments?.getParcelable(KEY_MOVIE)!!
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(ARG_MOVIE, movie)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,10 +57,11 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val observer = Observer<Movie> { movie ->
-            renderData(movie)
-        }
-        detailViewModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
+//        val observer = Observer<Movie> { movie ->
+//            renderData(movie)
+//        }
+//        detailMovieViewModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
+        renderData(movie)
     }
 
     override fun getTitleRes(): Int = R.string.detailing
@@ -139,7 +148,15 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
     }
 
     companion object {
+        private const val ARG_MOVIE = "ARG_MOVIE"
+        private const val KEY_MOVIE = "KEY_MOVIE"
+
         @JvmStatic
-        fun newInstance() = DetailMovieFragment()
+        fun newInstance(movie: Movie) =
+            DetailMovieFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(KEY_MOVIE, movie)
+                }
+            }
     }
 }

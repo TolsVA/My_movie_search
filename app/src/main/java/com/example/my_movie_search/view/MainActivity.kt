@@ -15,7 +15,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import com.example.my_movie_search.R
 import com.example.my_movie_search.app.App
 import com.example.my_movie_search.contract.CustomAction
@@ -26,8 +25,6 @@ import com.example.my_movie_search.contract.ResultListener
 import com.example.my_movie_search.databinding.ActivityMainBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
-import com.example.my_movie_search.model.sqlite.SQLiteHelper
-import com.example.my_movie_search.model.sqlite.SQLiteManager
 import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.details.DetailPersonsFragment
 import com.example.my_movie_search.view.main.MainFragment
@@ -37,24 +34,14 @@ class MainActivity : AppCompatActivity(), Navigator {
     private lateinit var binding: ActivityMainBinding
 
     companion object {
-        @JvmStatic
-        private val KEY_RESULT = "RESULT"
+
+        @JvmStatic private val KEY_RESULT = "KEY_RESULT"
 
         private lateinit var handlerThread: HandlerThread
 
         fun getHandler(): Handler {
             return Handler(handlerThread.looper)
         }
-
-        private val db: SQLiteHelper by lazy {
-            SQLiteHelper(App.appInstance.applicationContext)
-        }
-
-        private val managerSQLite: SQLiteManager by lazy {
-            SQLiteManager(db.writableDatabase)
-        }
-
-        fun sqLiteManager(): SQLiteManager = managerSQLite
     }
 
     private val currentFragment: Fragment
@@ -74,6 +61,7 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         handlerThread = HandlerThread(
             App.appInstance.getString(R.string.my_handler_thread)
         ).also { it.start() }
@@ -82,12 +70,10 @@ class MainActivity : AppCompatActivity(), Navigator {
 
         setSupportActionBar(binding.toolbar)
 
-        if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
                 .add(R.id.container, MainFragment())
                 .commit()
-        }
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)
     }
@@ -148,17 +134,17 @@ class MainActivity : AppCompatActivity(), Navigator {
     override fun onDestroy() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentListener)
         handlerThread.looper.quit()
-        db.close()
+//        App.getDb().close()
         super.onDestroy()
 
     }
 
     override fun showDetailPersonsScreen(persons: Persons) {
-        launchFragment(DetailPersonsFragment.newInstance())
+        launchFragment(DetailPersonsFragment.newInstance(persons))
     }
 
     override fun showDetailMovieScreen(movie: Movie) {
-        launchFragment(DetailMovieFragment.newInstance())
+        launchFragment(DetailMovieFragment.newInstance(movie))
     }
 
     override fun goBack() {

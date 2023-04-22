@@ -1,7 +1,5 @@
 package com.example.my_movie_search.viewModel
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_search.model.*
@@ -22,7 +20,7 @@ class MainViewModel(
     private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
 ) : ViewModel() {
 
-    var filter: String = ""
+    lateinit var filter: String
     fun getLiveDataNet() = liveDataToObserveNet
     fun getMovie(filter: String) = getDataFromNetSource(filter)
 
@@ -64,6 +62,9 @@ class MainViewModel(
         override fun onSuccess(result: MutableList<Movie>) {
             if (result.size > 0) {
                 liveDataToObserveNet.postValue(AppState.Success(result))
+//                if(result.size < 10) {
+//                    moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
+//                }
             }
             moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
         }

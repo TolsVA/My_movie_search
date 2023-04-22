@@ -93,6 +93,14 @@ class DetailPersonsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = DetailMovieFragment()
+        private const val ARG_PERSONS = "ARG_PERSONS"
+
+        @JvmStatic
+        fun newInstance(persons: Persons) =
+            DetailPersonsFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_PERSONS, persons)
+                }
+            }
     }
 }

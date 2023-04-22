@@ -1,10 +1,11 @@
 package com.example.my_movie_search.view.main
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,7 +16,6 @@ import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.view.details.DetailViewModel
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
 import com.example.my_movie_search.view.showSnackBar
@@ -28,37 +28,28 @@ class MainFragment : Fragment() {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
 
-    private val detailViewModel: DetailViewModel by lazy {
-        ViewModelProvider(this)[DetailViewModel::class.java]
-    }
-
     private val adapter: ItemAdapter by lazy {
         ItemAdapter()
     }
 
-    private var filter = ""
+    lateinit var filter: String
+    private lateinit var pref: SharedPreferences
 
-    private var movies = mutableListOf<Movie>()
+    private var movies = arrayListOf<Movie>()
 
     private var _binding: FragmentMainBinding? = null
     private val binding
         get() = _binding!!
 
     companion object {
-        @JvmStatic
-        private val ARG_FILTER = "ARG_FILTER"
+        private const val ARG_FILTER = "ARG_FILTER"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) {
-            filter = savedInstanceState.getString(ARG_FILTER).toString()
-        }
-    }
+        pref = requireActivity().getSharedPreferences("TABLE", Context.MODE_PRIVATE)
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(ARG_FILTER, filter)
+        filter = pref.getString(ARG_FILTER, "").toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +61,13 @@ class MainFragment : Fragment() {
             }
         }
 
+        if (savedInstanceState == null)
+            mainViewModel.getMovie(filter)
+
         with(binding) {
+
+            etFilter.setText(filter)
+
             btFilter.setOnClickListener {
                 filter = etFilter.text.toString()
                 progressNet.show()
@@ -157,7 +154,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setData(listMovies: MutableList<Movie>) {
-        movies = listMovies
+        movies.addAll(listMovies)
         binding.apply {
             rvListNet.layoutManager = GridLayoutManager(
                 context,
@@ -181,7 +178,6 @@ class MainFragment : Fragment() {
                         position: Int
                     ) {
                         (item as Movie).let {
-                            detailViewModel.getLiveDataDetail().value = it
                             navigator().showDetailMovieScreen(it)
                         }
                     }
@@ -192,6 +188,12 @@ class MainFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        filter = binding.etFilter.text.toString()
+
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor
+            .putString(ARG_FILTER, filter)
+            .apply()
         _binding = null
         adapter.setOnClickItem(null)
     }

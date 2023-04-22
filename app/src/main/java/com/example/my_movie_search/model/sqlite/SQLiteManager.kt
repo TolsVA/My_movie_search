@@ -3,10 +3,17 @@ package com.example.my_movie_search.model.sqlite
 import android.database.Cursor
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.core.database.sqlite.transaction
-import com.example.my_movie_search.model.*
+import com.example.my_movie_search.model.AuthException
+import com.example.my_movie_search.model.Country
+import com.example.my_movie_search.model.Genres
+import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.model.Persons
+import com.example.my_movie_search.model.Poster
+import com.example.my_movie_search.model.Rating
+import com.example.my_movie_search.model.Trailers
+import com.example.my_movie_search.model.Videos
 
 class SQLiteManager(private val db: SQLiteDatabase) {
 
@@ -26,12 +33,15 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 
     //все фил в баз -> "" или выб по -> filter
     fun getMoviesFromDb(filter: String): MutableList<Movie> {
+
+        val selection = MovieTable.COLUMN_NAME + " = ?"
+        val selectionArgs = arrayOf("\"*$filter*\"")
         return getMovie(
             db.query(
                 MovieTable.TABLE_NAME,
                 null,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null,
                 null,
                 null
@@ -116,6 +126,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                    val appException = StorageException()
 //                    appException.initCause(e)
 //                    throw appException
+                    Throwable(e)
                 }
 
                 for (person in movie.persons) {
@@ -139,6 +150,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                        val appException = StorageException()
 //                        appException.initCause(e)
 //                        throw appException
+                        Throwable(e)
                     }
 
                     try {
@@ -160,6 +172,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                        val appException = StorageException()
 //                        appException.initCause(e)
 //                        throw appException
+                        Throwable(e)
                     }
                 }
 
@@ -184,6 +197,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                            val appException = StorageException()
 //                            appException.initCause(e)
 //                            throw appException
+                            Throwable(e)
                         }
 
                         try {
@@ -205,6 +219,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                            val appException = StorageException()
 //                            appException.initCause(e)
 //                            throw appException
+                            Throwable(e)
                         }
                     }
                 }
@@ -228,6 +243,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                        val appException = StorageException()
 //                        appException.initCause(e)
 //                        throw appException
+                        Throwable(e)
                     }
 
                     try {
@@ -247,6 +263,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                        val appException = StorageException()
 //                        appException.initCause(e)
 //                        throw appException
+                        Throwable(e)
                     }
                 }
 
@@ -269,6 +286,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                        val appException = StorageException()
 //                        appException.initCause(e)
 //                        throw appException
+                        Throwable(e)
                     }
 
                     try {
@@ -288,6 +306,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                        val appException = StorageException()
 //                        appException.initCause(e)
 //                        throw appException
+                        Throwable(e)
                     }
                 }
             }
@@ -353,7 +372,6 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                     ),
                     getPersonsFromDb(idRow)
                 )
-
                 movies.add(movie)
             }
         }
