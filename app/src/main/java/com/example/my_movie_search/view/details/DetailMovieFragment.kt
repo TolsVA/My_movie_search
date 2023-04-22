@@ -96,7 +96,6 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
         navigator().goBack()
     }
 
-
     private fun renderData(movie: Movie) {
         binding.apply {
             Picasso.get()
@@ -131,14 +130,14 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
             tvName.mySetText(movie.name)
             movie.genres.forEach {
-                tvGenre.append("\n${it.name},")
+                tvGenres.append("${it.name}\n")
             }
 
             movie.countries.forEach {
-                tvAuthor.append(" ${it.name}\n")
+                tvCountries.append(" ${it.name}\n")
             }
 
-            tvShortDescription.mySetText(movie.description)
+            tvDescription.mySetText(movie.description)
         }
     }
 
