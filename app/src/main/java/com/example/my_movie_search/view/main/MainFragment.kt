@@ -2,6 +2,7 @@ package com.example.my_movie_search.view.main
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -158,7 +159,10 @@ class MainFragment : Fragment() {
         binding.apply {
             rvListNet.layoutManager = GridLayoutManager(
                 context,
-                3,
+                when (resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) {
+                    true -> 3
+                    false -> 6
+                },
                 GridLayoutManager.VERTICAL,
                 false
             )

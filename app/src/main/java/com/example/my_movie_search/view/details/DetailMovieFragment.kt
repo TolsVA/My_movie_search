@@ -128,7 +128,22 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
                 })
             }
 
-            tvName.mySetText(movie.name)
+
+            movie.name?.split(' ')
+                ?.filter { it.isNotBlank() }
+                ?.forEach {
+                    tvName.append("$it\n")
+                }
+
+//            tvName.mySetText(movie.name)
+            tvRating.mySetText(movie.rating?.kp.toString())
+            tvType.mySetText(movie.type.toString())
+            tvYear.mySetText(movie.year.toString())
+            tvLength.mySetText(
+                "${movie.movieLength?.div(60)}ч ${movie.movieLength?.rem(60)}м"
+            )
+
+
             movie.genres.forEach {
                 tvGenres.append("${it.name}\n")
             }
