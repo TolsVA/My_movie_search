@@ -1,6 +1,6 @@
 package com.example.my_movie_search.repository.retrofit
 
-import com.example.my_movie_search.model.MovieList
+import com.example.my_movie_search.model.MovieListPersonsId
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -12,5 +12,5 @@ interface PersonsIdAPI {
         @Query("selectFields") selectFields: String = "id movies",
         @Query("id") id: Long,
         @Query("limit") limit: Int = 1
-    ): Call<MovieList>
+    ): Call<MovieListPersonsId>
 }

@@ -13,7 +13,7 @@ import java.io.IOException
 
 private const val SERVER_ERROR = "SERVER_ERROR"
 private const val REQUEST_ERROR = "REQUEST_ERROR"
-const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
+private const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 
 class MainViewModel(
     private val liveDataToObserveNet: MutableLiveData<AppState> = MutableLiveData(),
@@ -66,7 +66,7 @@ class MainViewModel(
 //                    moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
 //                }
             }
-            moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
+//            moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
         }
 
         override fun onError(error: Throwable?) {

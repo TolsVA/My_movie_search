@@ -3,6 +3,7 @@ package com.example.my_movie_search.repository
 import com.example.my_movie_search.app.App
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.MovieList
+import com.example.my_movie_search.model.MovieListPersonsId
 import com.example.my_movie_search.repository.retrofit.RemoteDataSource
 import com.example.my_movie_search.view.MainActivity
 
@@ -15,7 +16,14 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
     }
 
     override fun getMovieFromNetServer(id: Long, callback: retrofit2.Callback<MovieList>) {
-//        remoteDataSource.getPersonsIdAPI(id, callback)
+        remoteDataSource.getMoviesID(id, callback)
+    }
+
+    override fun getMoviePersonsFromNetServer(
+        id: Long,
+        callback: retrofit2.Callback<MovieListPersonsId>
+    ) {
+        remoteDataSource.getPersonsIdAPI(id, callback)
     }
 
     override fun getMovieFromSQLite(
@@ -27,18 +35,24 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
         }
     }
 
+    override fun getMovieFromSQLite(id: Long, callback: Callback<MutableList<Movie>>) {
+        MainActivity.getHandler().post {
+            callback.onSuccess(sqLiteManager.getMoviesFromDb(id))
+        }
+    }
+
     override fun insertMovieToDb(movies: MutableList<Movie>) {
         MainActivity.getHandler().post {
             sqLiteManager.insertMovieToDb(movies)
         }
     }
 
-    override fun getMoviesPersonsFromSQLite(
+    override fun getMoviesPersonsIdFromSQLite(
         id: Long?,
         callback: Callback<MutableList<Movie>>
     ) {
         MainActivity.getHandler().post {
-            callback.onSuccess(sqLiteManager.getMoviesPersonsFromSQLite(id))
+            callback.onSuccess(sqLiteManager.getMoviesPersonsIdFromSQLite(id))
         }
     }
 }

@@ -15,37 +15,55 @@ import com.example.my_movie_search.model.Rating
 import com.example.my_movie_search.model.Trailers
 import com.example.my_movie_search.model.Videos
 
+
 class SQLiteManager(private val db: SQLiteDatabase) {
 
-    fun getMoviesFromDb2(filter: String): MutableList<Movie> {
-        db.delete(MovieTable.TABLE_NAME, null, null);
-        db.delete(PersonsTable.TABLE_NAME, null, null);
-        db.delete(MoviePersonsSettingsTable.TABLE_NAME, null, null);
-        db.delete(TrailersTable.TABLE_NAME, null, null);
-        db.delete(MovieTrailersSettingsTable.TABLE_NAME, null, null);
-        db.delete(CountriesTable.TABLE_NAME, null, null);
-        db.delete(MovieCountriesSettingsTable.TABLE_NAME, null, null);
-        db.delete(GenresTable.TABLE_NAME, null, null);
-        db.delete(MovieGenresSettingsTable.TABLE_NAME, null, null);
-
-        return mutableListOf()
-    }
+//    fun getMoviesFromDb2(filter: String): MutableList<Movie> {
+//        db.delete(MovieTable.TABLE_NAME, null, null);
+//        db.delete(PersonsTable.TABLE_NAME, null, null);
+//        db.delete(MoviePersonsSettingsTable.TABLE_NAME, null, null);
+//        db.delete(TrailersTable.TABLE_NAME, null, null);
+//        db.delete(MovieTrailersSettingsTable.TABLE_NAME, null, null);
+//        db.delete(CountriesTable.TABLE_NAME, null, null);
+//        db.delete(MovieCountriesSettingsTable.TABLE_NAME, null, null);
+//        db.delete(GenresTable.TABLE_NAME, null, null);
+//        db.delete(MovieGenresSettingsTable.TABLE_NAME, null, null);
+//
+//        return mutableListOf()
+//    }
 
     //все фил в баз -> "" или выб по -> filter
     fun getMoviesFromDb(filter: String): MutableList<Movie> {
-
-        val selection = MovieTable.COLUMN_NAME + " = ?"
-        val selectionArgs = arrayOf("\"*$filter*\"")
+        val sgl = "SELECT * " +
+                "FROM " + MovieTable.TABLE_NAME +
+                " WHERE " + MovieTable.COLUMN_NAME +
+                " GLOB " + "\"*" + filter + "*\""
         return getMovie(
-            db.query(
-                MovieTable.TABLE_NAME,
-                null,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-            )
+            db.rawQuery(sgl, null, null)
+        )
+    }
+
+    fun getMoviesFromDb(id: Long): MutableList<Movie> {
+//        val selection = MovieTable.COLUMN_ID + " = ?"
+//        val selectionArgs = arrayOf("$id")
+//        return getMovie(
+//            db.query(
+//                MovieTable.TABLE_NAME,
+//                null,
+//                selection,
+//                selectionArgs,
+//                null,
+//                null,
+//                null
+//            )
+//        )
+
+        val sgl = "SELECT * " +
+                "FROM " + MovieTable.TABLE_NAME +
+                " WHERE " + MovieTable.COLUMN_ID +
+                " GLOB "  + id
+        return getMovie(
+            db.rawQuery(sgl, null, null)
         )
     }
 
@@ -86,13 +104,19 @@ class SQLiteManager(private val db: SQLiteDatabase) {
         return persons
     }
 
-    private fun getRatingFromDb(): Rating {
+    private fun getRatingFromDb(
+        kp: Double,
+        imdb: Double?,
+        filmCritics: Double?,
+        russianFilmCritics: Double?,
+        await: Double?
+    ): Rating {
         return Rating(
-            null,
-            null,
-            null,
-            null,
-            null
+            kp,
+            imdb,
+            filmCritics,
+            russianFilmCritics,
+            await
         )
 
     }
@@ -314,7 +338,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
     }
 
     //выб фил по id Акт
-    fun getMoviesPersonsFromSQLite(id: Long?): MutableList<Movie> {
+    fun getMoviesPersonsIdFromSQLite(id: Long?): MutableList<Movie> {
 
         val sql = "SELECT  ${PersonsTable.TABLE_NAME}.*, ${MoviePersonsSettingsTable.TABLE_NAME}." +
                 "${MoviePersonsSettingsTable.COLUMN_MOVIE_NAME} " +
@@ -331,8 +355,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
     private fun getMovie(cursor: Cursor): MutableList<Movie> {
         val movies = mutableListOf<Movie>()
         cursor.use {
-//            Log.d("MyLog", cursor.toString())
-            if (cursor.count == 0) movies
+            if (cursor.count == 0) return movies
 
             while (cursor.moveToNext()) {
                 val idRow = cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID_ROW))
@@ -345,10 +368,14 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                     cursor.getColumnIndexOrThrow(MovieTable.COLUMN_POSTER_URL)
                 )
 
+                 val imdb: Double? = null
+                val filmCritics: Double? = null
+                val russianFilmCritics: Double? = null
+                val await: Double? = null
 
                 val movie = Movie(
                     idRow,
-                    Rating(ratingKp, null, null, null, null),
+                    getRatingFromDb(ratingKp, imdb, filmCritics, russianFilmCritics, await),
                     cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_MOVIE_LENGTH)),
                     cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_TYPE)),

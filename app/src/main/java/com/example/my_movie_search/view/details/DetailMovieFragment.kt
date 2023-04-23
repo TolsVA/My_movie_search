@@ -16,6 +16,7 @@ import com.example.my_movie_search.contract.HasCustomTitle
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailMovieBinding
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.view.mySetText
 import com.squareup.picasso.Picasso
 
@@ -123,19 +124,14 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
                         item: AdapterItem,
                         position: Int
                     ) {
-
+                        (item as Persons).let {
+                            navigator().showDetailPersonsScreen(it)
+                        }
                     }
                 })
             }
 
-
-            movie.name?.split(' ')
-                ?.filter { it.isNotBlank() }
-                ?.forEach {
-                    tvName.append("$it\n")
-                }
-
-//            tvName.mySetText(movie.name)
+            tvName.mySetText(movie.name)
             tvRating.mySetText(movie.rating?.kp.toString())
             tvType.mySetText(movie.type.toString())
             tvYear.mySetText(movie.year.toString())
@@ -145,11 +141,11 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
 
             movie.genres.forEach {
-                tvGenres.append("${it.name}\n")
+                tvGenres.append("${it.name} ")
             }
 
             movie.countries.forEach {
-                tvCountries.append(" ${it.name}\n")
+                tvCountries.append(" ${it.name} ")
             }
 
             tvDescription.mySetText(movie.description)

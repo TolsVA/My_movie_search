@@ -2,6 +2,7 @@ package com.example.my_movie_search.repository.retrofit
 
 import com.example.my_movie_search.BuildConfig
 import com.example.my_movie_search.model.MovieList
+import com.example.my_movie_search.model.MovieListPersonsId
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -59,7 +60,7 @@ class RemoteDataSource {
         .build()
         .create(PersonsIdAPI::class.java)
 
-    fun getPersonsIdAPI(id: Long, callback: Callback<MovieList>) {
+    fun getPersonsIdAPI(id: Long, callback: Callback<MovieListPersonsId>) {
         personsIdAPI
             .getPersonsIdAPI(token = BuildConfig.MOVIE_API_KEY, id = id)
             .enqueue(callback)

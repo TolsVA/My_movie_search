@@ -58,11 +58,12 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:textSize="@dimen/text_size_detail"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/barrier"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -90,9 +91,9 @@
                     android:id="@+id/tv_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Тип:"
                     android:textSize="@dimen/text_size_detail"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_title_type"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_name"
                     app:layout_constraintTop_toTopOf="@+id/tv_title_type" />
 
@@ -108,11 +109,11 @@
 
                 <TextView
                     android:id="@+id/tv_length"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="1ч 20м"
                     android:textSize="@dimen/text_size_detail"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_title_length"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_type"
                     app:layout_constraintTop_toTopOf="@+id/tv_title_length" />
 
@@ -128,13 +129,15 @@
 
                 <TextView
                     android:id="@+id/tv_rating"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Рейтинг"
+                    android:layout_marginStart="4dp"
                     android:textSize="@dimen/text_size_detail"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_title_rating"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_length"
-                    app:layout_constraintTop_toTopOf="@+id/tv_title_rating" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_rating"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/tv_title_year"
@@ -148,10 +151,10 @@
 
                 <TextView
                     android:id="@+id/tv_year"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="2023г."
                     android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_rating"
                     app:layout_constraintTop_toTopOf="@+id/tv_title_year" />
 
@@ -168,10 +171,10 @@
 
                 <TextView
                     android:id="@+id/tv_genres"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Жанр"
                     android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_year"
                     app:layout_constraintTop_toTopOf="@+id/tv_title_genres" />
 
@@ -180,16 +183,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="Страна:"
+                    android:layout_marginTop="4dp"
                     android:textSize="@dimen/text_size_detail"
                     app:layout_constraintStart_toStartOf="@+id/tv_title_genres"
                     app:layout_constraintTop_toBottomOf="@+id/tv_genres" />
 
                 <TextView
                     android:id="@+id/tv_countries"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Страна"
                     android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_genres"
                     app:layout_constraintTop_toTopOf="@+id/tv_title_countries" />
 
@@ -207,7 +211,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/barrier_description" />
 
             <View
-                android:id="@+id/view_description"
+                android:id="@+id/view_movie"
                 android:layout_width="0dp"
                 android:layout_height="0.1dp"
                 android:layout_marginTop="2dp"
@@ -218,13 +222,13 @@
 
             <TextView
                 android:id="@+id/tv_description"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:hint="Краткое описание"
                 android:textSize="@dimen/text_size_detail"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_description" />
+                app:layout_constraintTop_toBottomOf="@+id/view_movie" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier_description"

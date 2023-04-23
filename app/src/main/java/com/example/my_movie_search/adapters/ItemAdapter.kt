@@ -106,4 +106,11 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
         items.clear()
         notifyDataSetChanged()
     }
+
+    fun addPosition(listItem: MutableList<AdapterItem>) {
+
+        for (item in listItem) {
+            this.items.add(item)
+        }
+    }
 }
