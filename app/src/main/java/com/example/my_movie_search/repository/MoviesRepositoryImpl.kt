@@ -4,6 +4,7 @@ import com.example.my_movie_search.app.App
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.MovieList
 import com.example.my_movie_search.model.MovieListPersonsId
+import com.example.my_movie_search.model.Movies
 import com.example.my_movie_search.repository.retrofit.RemoteDataSource
 import com.example.my_movie_search.view.MainActivity
 
@@ -19,7 +20,7 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
         remoteDataSource.getMoviesID(id, callback)
     }
 
-    override fun getMoviePersonsFromNetServer(
+    override fun getMoviePersonsIdFromNetServer(
         id: Long,
         callback: retrofit2.Callback<MovieListPersonsId>
     ) {
@@ -41,6 +42,15 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
         }
     }
 
+    override fun getMovieFromSQLite(
+        movies: MutableList<Movies>,
+        callback: Callback<MutableList<Movie>>
+    ) {
+        MainActivity.getHandler().post {
+            callback.onSuccess(sqLiteManager.getMoviesFromDb(movies))
+        }
+    }
+
     override fun insertMovieToDb(movies: MutableList<Movie>) {
         MainActivity.getHandler().post {
             sqLiteManager.insertMovieToDb(movies)
@@ -48,7 +58,7 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
     }
 
     override fun getMoviesPersonsIdFromSQLite(
-        id: Long?,
+        id: Long,
         callback: Callback<MutableList<Movie>>
     ) {
         MainActivity.getHandler().post {

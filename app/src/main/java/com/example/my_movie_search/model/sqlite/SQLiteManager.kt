@@ -9,6 +9,7 @@ import com.example.my_movie_search.model.AuthException
 import com.example.my_movie_search.model.Country
 import com.example.my_movie_search.model.Genres
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.model.Movies
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.model.Poster
 import com.example.my_movie_search.model.Rating
@@ -62,6 +63,22 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                 "FROM " + MovieTable.TABLE_NAME +
                 " WHERE " + MovieTable.COLUMN_ID +
                 " GLOB "  + id
+        return getMovie(
+            db.rawQuery(sgl, null, null)
+        )
+    }
+
+    fun getMoviesFromDb(movies: MutableList<Movies>): MutableList<Movie> {
+        var listId= ""
+        movies.forEach {
+            listId = "$listId${it.id}, "
+        }
+
+        val sgl = "SELECT * " +
+                "FROM " + MovieTable.TABLE_NAME +
+                " WHERE " + MovieTable.COLUMN_ID +
+                " IN (" + listId.substring(0, listId.length - 2) + ")"
+
         return getMovie(
             db.rawQuery(sgl, null, null)
         )

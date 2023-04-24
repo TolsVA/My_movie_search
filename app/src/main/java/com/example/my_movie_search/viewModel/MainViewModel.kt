@@ -62,11 +62,12 @@ class MainViewModel(
         override fun onSuccess(result: MutableList<Movie>) {
             if (result.size > 0) {
                 liveDataToObserveNet.postValue(AppState.Success(result))
-//                if(result.size < 10) {
-//                    moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
-//                }
+                if(result.size < 10) {
+                    moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
+                }
+            } else {
+                moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
             }
-//            moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
         }
 
         override fun onError(error: Throwable?) {

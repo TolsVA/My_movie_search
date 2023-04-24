@@ -1,25 +1,18 @@
 package com.example.my_movie_search.view.details
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
-import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailPersonsBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
-import com.example.my_movie_search.view.hide
-import com.example.my_movie_search.view.show
-import com.example.my_movie_search.view.showSnackBar
 import com.example.my_movie_search.viewModel.AppState
 import com.squareup.picasso.Picasso
 
@@ -157,7 +150,11 @@ class DetailPersonsFragment : Fragment() {
                     listItem.add(movie)
                 }
 
-                addPosition(listItem)
+                if (listItem.size == 1) {
+                    addPosition(listItem)
+                } else {
+                    addList(listItem)
+                }
                 setOnClickItem(object : ItemAdapter.OnClickItem {
                     override fun onClickItem(
                         item: AdapterItem,
