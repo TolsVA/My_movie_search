@@ -3,6 +3,7 @@ package com.example.my_movie_search.model.sqlite
 import android.database.Cursor
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.core.database.sqlite.transaction
 import com.example.my_movie_search.model.AuthException
@@ -34,42 +35,30 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //    }
 
     //все фил в баз -> "" или выб по -> filter
-    fun getMoviesFromDb(filter: String): MutableList<Movie> {
-        val sgl = "SELECT * " +
-                "FROM " + MovieTable.TABLE_NAME +
-                " WHERE " + MovieTable.COLUMN_NAME +
-                " GLOB " + "\"*" + filter + "*\""
-        return getMovie(
-            db.rawQuery(sgl, null, null)
+    fun getMoviesFromDb(filter: String) = getMovie(
+        db.rawQuery(
+            "SELECT * " +
+                    "FROM ${MovieTable.TABLE_NAME} " +
+                    "WHERE ${MovieTable.COLUMN_NAME} " +
+                    "GLOB \"*" + filter + "*\"",
+            null,
+            null
         )
-    }
+    )
 
-    fun getMoviesFromDb(id: Long): MutableList<Movie> {
-//        val selection = MovieTable.COLUMN_ID + " = ?"
-//        val selectionArgs = arrayOf("$id")
-//        return getMovie(
-//            db.query(
-//                MovieTable.TABLE_NAME,
-//                null,
-//                selection,
-//                selectionArgs,
-//                null,
-//                null,
-//                null
-//            )
-//        )
-
-        val sgl = "SELECT * " +
-                "FROM " + MovieTable.TABLE_NAME +
-                " WHERE " + MovieTable.COLUMN_ID +
-                " GLOB "  + id
-        return getMovie(
-            db.rawQuery(sgl, null, null)
+    fun getMoviesFromDb(id: Long): MutableList<Movie> = getMovie(
+        db.rawQuery(
+            "SELECT * " +
+                    "FROM " + MovieTable.TABLE_NAME +
+                    " WHERE " + MovieTable.COLUMN_ID +
+                    " GLOB " + id,
+            null,
+            null
         )
-    }
+    )
 
     fun getMoviesFromDb(movies: MutableList<Movies>): MutableList<Movie> {
-        var listId= ""
+        var listId = ""
         movies.forEach {
             listId = "$listId${it.id}, "
         }
@@ -356,17 +345,79 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 
     //выб фил по id Акт
     fun getMoviesPersonsIdFromSQLite(id: Long?): MutableList<Movie> {
-
-        val sql = "SELECT  ${PersonsTable.TABLE_NAME}.*, ${MoviePersonsSettingsTable.TABLE_NAME}." +
-                "${MoviePersonsSettingsTable.COLUMN_MOVIE_NAME} " +
-                "FROM ${PersonsTable.TABLE_NAME} " +
-                "INNER JOIN  ${MoviePersonsSettingsTable.TABLE_NAME} " +
-                "ON  ${PersonsTable.TABLE_NAME}.${PersonsTable.COLUMN_NAME} = " +
+        val sql = "SELECT  ${MovieTable.TABLE_NAME}.*, " +
                 "${MoviePersonsSettingsTable.TABLE_NAME}." +
-                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
-                "AND ${PersonsTable.TABLE_NAME}.${PersonsTable.COLUMN_ID} =$id"
+                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME}" +
+                " FROM ${MovieTable.TABLE_NAME} " +
+                "INNER JOIN  ${MoviePersonsSettingsTable.TABLE_NAME} " +
+                "ON  ${MovieTable.TABLE_NAME}.${MovieTable.COLUMN_ID_ROW} = " +
+                "${MoviePersonsSettingsTable.TABLE_NAME}." +
+                "${MoviePersonsSettingsTable.COLUMN_MOVIE_ID_ROW} " +
+                "AND ${MoviePersonsSettingsTable.TABLE_NAME}." +
+                "${MoviePersonsSettingsTable.COLUMN_PERSONS_ID}=$id"
+        Log.d("MyLog", "persons_id -> ${id.toString()}")
+//        val sql = "SELECT  ${MovieTable.TABLE_NAME}.*, ${MoviePersonsSettingsTable.TABLE_NAME}." +
+//                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
+//                "FROM ${MovieTable.TABLE_NAME} " +
+//                "INNER JOIN  ${MoviePersonsSettingsTable.TABLE_NAME} " +
+//                "ON  ${MovieTable.TABLE_NAME}.${MovieTable.COLUMN_NAME} = " +
+//                "${MoviePersonsSettingsTable.TABLE_NAME}." +
+//                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
+//                "AND ${MoviePersonsSettingsTable.TABLE_NAME}.${MoviePersonsSettingsTable.COLUMN_PERSONS_ID} =$id"
 
-        return getMovie(db.rawQuery(sql, null, null))
+//        return getMovie(db.rawQuery(sql, null, null))
+        val cursor = db.rawQuery(sql, null, null)
+        val movies = mutableListOf<Movie>()
+        cursor.use {
+            if (cursor.count == 0) return movies
+
+            while (cursor.moveToNext()) {
+                val idRow = cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID_ROW))
+
+                val ratingKp = cursor.getDouble(
+                    cursor.getColumnIndexOrThrow(MovieTable.COLUMN_RATING_KP)
+                )
+
+                val posterUrl = cursor.getString(
+                    cursor.getColumnIndexOrThrow(MovieTable.COLUMN_POSTER_URL)
+                )
+
+                val imdb: Double? = null
+                val filmCritics: Double? = null
+                val russianFilmCritics: Double? = null
+                val await: Double? = null
+
+                val movie = Movie(
+                    idRow,
+                    getRatingFromDb(ratingKp, imdb, filmCritics, russianFilmCritics, await),
+                    cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_MOVIE_LENGTH)),
+                    cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_TYPE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_DESCRIPTION)),
+                    cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_YEAR)),
+                    Poster(posterUrl, null),
+                    listOf(Genres(null, null)),
+                    listOf(Country(null, null)),
+                    Videos(
+                        listOf(
+                            Trailers(
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            )
+                        ),
+                        listOf("")
+                    ),
+                    getPersonsFromDb(idRow)
+                )
+                movies.add(movie)
+            }
+        }
+        Log.d("MyLog", "() -> ${movies.toString()}")
+        return movies
     }
 
     private fun getMovie(cursor: Cursor): MutableList<Movie> {
@@ -385,7 +436,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                     cursor.getColumnIndexOrThrow(MovieTable.COLUMN_POSTER_URL)
                 )
 
-                 val imdb: Double? = null
+                val imdb: Double? = null
                 val filmCritics: Double? = null
                 val russianFilmCritics: Double? = null
                 val await: Double? = null

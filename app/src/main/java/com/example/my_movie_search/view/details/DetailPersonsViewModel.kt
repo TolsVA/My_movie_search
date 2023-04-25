@@ -40,7 +40,8 @@ class DetailPersonsViewModel(
         idPerson = persons?.id
         messageMoviesPersonsFragment.value = AppState.Loading
         if (idPerson != null) {
-            moviesRepositoryImpl.getMoviePersonsIdFromNetServer(idPerson!!, callBack)
+//            moviesRepositoryImpl.getMoviePersonsIdFromNetServer(idPerson!!, callBack)
+            moviesRepositoryImpl.getMoviesPersonsIdFromSQLite(idPerson!!, callBackLocalIdMovie)
         } else {
             Toast.makeText(
                 App.appInstance.applicationContext,
@@ -52,35 +53,50 @@ class DetailPersonsViewModel(
 
     private fun getMoviePersonsId(docs: MutableList<Docs>) {
         for (movies in docs) {
-            Log.d("MyLog","movies.movies.toString() -> ${movies.movies}")
 
             moviesPersonIdNetServer = movies.movies
             moviesRepositoryImpl.getMovieFromSQLite(moviesPersonIdNetServer, callBackLocalIdMovie)
         }
     }
 
+    private val callBackLocalIdMovie2 = object : Callback<MutableList<Movie>> {
+        override fun onSuccess(result: MutableList<Movie>) {
+            Log.d("MyLog1", result.toString())
+        }
+
+        override fun onError(error: Throwable?) {
+            TODO("Not yet implemented")
+        }
+
+    }
+
+
+
     private val callBackLocalIdMovie = object : Callback<MutableList<Movie>> {
         override fun onSuccess(result: MutableList<Movie>) {
-            val requestSheet = mutableListOf<Movies>()
-            val booleanList = mutableListOf<Boolean>()
-            if (result.size > 0) {
-                messageMoviesPersonsFragment.postValue(AppState.Success(result))
-                for (index in 0 until moviesPersonIdNetServer.size) {
-                    booleanList.add(true)
-                    for (movieLocal in result) {
-                        if (moviesPersonIdNetServer[index].id == movieLocal.id) {
-                            booleanList[index] = false
-                        }
-                    }
-                }
 
-                for (index in 0 until booleanList.size) {
-                    if (booleanList[index]) {
-                        requestSheet.add(moviesPersonIdNetServer[index])
-                    }
-                }
-            }
-            getMovie(requestSheet)
+//            Log.d("MyLog", result.toString())
+//            val requestSheet = mutableListOf<Movies>()
+//            val booleanList = mutableListOf<Boolean>()
+//            if (result.size > 0) {
+                messageMoviesPersonsFragment.postValue(AppState.Success(result))
+            moviesRepositoryImpl.getMovieFromSQLite(moviesPersonIdNetServer, callBackLocalIdMovie2)
+//                for (index in 0 until moviesPersonIdNetServer.size) {
+//                    booleanList.add(true)
+//                    for (movieLocal in result) {
+//                        if (moviesPersonIdNetServer[index].id == movieLocal.id) {
+//                            booleanList[index] = false
+//                        }
+//                    }
+//                }
+//
+//                for (index in 0 until booleanList.size) {
+//                    if (booleanList[index]) {
+//                        requestSheet.add(moviesPersonIdNetServer[index])
+//                    }
+//                }
+//            }
+//            getMovie(requestSheet)
         }
 
         override fun onError(error: Throwable?) {
