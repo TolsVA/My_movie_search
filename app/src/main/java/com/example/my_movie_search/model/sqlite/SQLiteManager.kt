@@ -365,59 +365,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 //                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
 //                "AND ${MoviePersonsSettingsTable.TABLE_NAME}.${MoviePersonsSettingsTable.COLUMN_PERSONS_ID} =$id"
 
-//        return getMovie(db.rawQuery(sql, null, null))
-        val cursor = db.rawQuery(sql, null, null)
-        val movies = mutableListOf<Movie>()
-        cursor.use {
-            if (cursor.count == 0) return movies
-
-            while (cursor.moveToNext()) {
-                val idRow = cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID_ROW))
-
-                val ratingKp = cursor.getDouble(
-                    cursor.getColumnIndexOrThrow(MovieTable.COLUMN_RATING_KP)
-                )
-
-                val posterUrl = cursor.getString(
-                    cursor.getColumnIndexOrThrow(MovieTable.COLUMN_POSTER_URL)
-                )
-
-                val imdb: Double? = null
-                val filmCritics: Double? = null
-                val russianFilmCritics: Double? = null
-                val await: Double? = null
-
-                val movie = Movie(
-                    idRow,
-                    getRatingFromDb(ratingKp, imdb, filmCritics, russianFilmCritics, await),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_MOVIE_LENGTH)),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_ID)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_TYPE)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_NAME)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_DESCRIPTION)),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_YEAR)),
-                    Poster(posterUrl, null),
-                    listOf(Genres(null, null)),
-                    listOf(Country(null, null)),
-                    Videos(
-                        listOf(
-                            Trailers(
-                                null,
-                                null,
-                                null,
-                                null,
-                                null
-                            )
-                        ),
-                        listOf("")
-                    ),
-                    getPersonsFromDb(idRow)
-                )
-                movies.add(movie)
-            }
-        }
-        Log.d("MyLog", "() -> ${movies.toString()}")
-        return movies
+        return getMovie(db.rawQuery(sql, null, null))
     }
 
     private fun getMovie(cursor: Cursor): MutableList<Movie> {

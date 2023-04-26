@@ -45,7 +45,7 @@ class DetailPersonsViewModel(
         } else {
             Toast.makeText(
                 App.appInstance.applicationContext,
-                "Нет id у актера поиск невозьожен",
+                "Нет id у person по-иск не-воз-мо-жен",
                 Toast.LENGTH_SHORT
             ).show()
         }
