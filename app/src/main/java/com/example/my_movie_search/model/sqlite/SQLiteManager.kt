@@ -10,7 +10,6 @@ import com.example.my_movie_search.model.AuthException
 import com.example.my_movie_search.model.Country
 import com.example.my_movie_search.model.Genres
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.model.Movies
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.model.Poster
 import com.example.my_movie_search.model.Rating
@@ -57,7 +56,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
         )
     )
 
-    fun getMoviesFromDb(movies: MutableList<Movies>): MutableList<Movie> {
+    fun getMoviesFromDb(movies: MutableList<Movie>): MutableList<Movie> {
         var listId = ""
         movies.forEach {
             listId = "$listId${it.id}, "
@@ -75,14 +74,13 @@ class SQLiteManager(private val db: SQLiteDatabase) {
 
     // выб акт по id фил
     private fun getPersonsFromDb(idRow: Long): MutableList<Persons> {
-
         val sql = "SELECT  ${PersonsTable.TABLE_NAME}.*, ${MoviePersonsSettingsTable.TABLE_NAME}." +
                 "${MoviePersonsSettingsTable.COLUMN_MOVIE_NAME} " +
                 "FROM ${PersonsTable.TABLE_NAME} " +
                 "INNER JOIN  ${MoviePersonsSettingsTable.TABLE_NAME} " +
-                "ON  ${PersonsTable.TABLE_NAME}.${PersonsTable.COLUMN_NAME} = " +
+                "ON  ${PersonsTable.TABLE_NAME}.${PersonsTable.COLUMN_ID} = " +
                 "${MoviePersonsSettingsTable.TABLE_NAME}." +
-                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
+                "${MoviePersonsSettingsTable.COLUMN_PERSONS_ID} " +
                 "AND ${MoviePersonsSettingsTable.TABLE_NAME}.${MoviePersonsSettingsTable.COLUMN_MOVIE_ID_ROW}= $idRow;"
 
         val cursor = db.rawQuery(sql, null, null)
@@ -347,7 +345,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
     fun getMoviesPersonsIdFromSQLite(id: Long?): MutableList<Movie> {
         val sql = "SELECT  ${MovieTable.TABLE_NAME}.*, " +
                 "${MoviePersonsSettingsTable.TABLE_NAME}." +
-                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME}" +
+                MoviePersonsSettingsTable.COLUMN_PERSONS_NAME +
                 " FROM ${MovieTable.TABLE_NAME} " +
                 "INNER JOIN  ${MoviePersonsSettingsTable.TABLE_NAME} " +
                 "ON  ${MovieTable.TABLE_NAME}.${MovieTable.COLUMN_ID_ROW} = " +

@@ -70,10 +70,12 @@ class MainActivity : AppCompatActivity(), Navigator {
 
         setSupportActionBar(binding.toolbar)
 
+        if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.container, MainFragment())
+                .add(R.id.container, MainFragment(), MainFragment.TAG)
                 .commit()
+        }
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)
     }
@@ -139,12 +141,12 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     }
 
-    override fun showDetailPersonsScreen(persons: Persons) {
-        launchFragment(DetailPersonsFragment.newInstance(persons))
+    override fun showDetailPersonsScreen(persons: Persons, TAG: String) {
+        launchFragment(DetailPersonsFragment.newInstance(persons), TAG)
     }
 
-    override fun showDetailMovieScreen(movie: Movie) {
-        launchFragment(DetailMovieFragment.newInstance(movie))
+    override fun showDetailMovieScreen(movie: Movie, TAG: String) {
+        launchFragment(DetailMovieFragment.newInstance(movie), TAG)
     }
 
     override fun goBack() {
@@ -178,7 +180,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    private fun launchFragment(fragment: Fragment) {
+    private fun launchFragment(fragment: Fragment, TAG: String) {
         supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(
@@ -187,8 +189,9 @@ class MainActivity : AppCompatActivity(), Navigator {
                 R.anim.fade_in,
                 R.anim.slide_out
             )
-            .addToBackStack(null)
-            .replace(R.id.container, fragment)
+            .hide(currentFragment)
+            .addToBackStack("")
+            .add(R.id.container, fragment, TAG)
             .commit()
     }
 }

@@ -14,10 +14,10 @@ fun Fragment.navigator(): Navigator {
 
 interface Navigator {
 
-    fun showDetailPersonsScreen(persons: Persons)
+    fun showDetailPersonsScreen(persons: Persons, TAG: String)
 //    fun showDetailPersonsScreen()
 
-    fun showDetailMovieScreen(movie: Movie)
+    fun showDetailMovieScreen(movie: Movie, TAG: String)
 
     fun goBack()
 

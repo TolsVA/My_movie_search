@@ -125,7 +125,7 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
                         position: Int
                     ) {
                         (item as Persons).let {
-                            navigator().showDetailPersonsScreen(it)
+                            navigator().showDetailPersonsScreen(it, DetailPersonsFragment.TAG)
                         }
                     }
                 })
@@ -158,6 +158,7 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
     }
 
     companion object {
+        const val TAG = "DetailMovieFragment"
         private const val ARG_MOVIE = "ARG_MOVIE"
         private const val KEY_MOVIE = "KEY_MOVIE"
 

@@ -30,7 +30,8 @@ class DetailPersonsViewModel(
     private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
 ) : ViewModel() {
     private var idPerson: Long? = null
-    lateinit var moviesPersonIdNetServer: MutableList<Movies>
+    lateinit var moviesPersonIdLocal: MutableList<Movie>
+    private lateinit var moviesPersonIdNetServer: MutableList<Movies>
 
     fun getLiveDataDetailPersons() = messageDetailPersonsFragment
 
@@ -40,8 +41,7 @@ class DetailPersonsViewModel(
         idPerson = persons?.id
         messageMoviesPersonsFragment.value = AppState.Loading
         if (idPerson != null) {
-//            moviesRepositoryImpl.getMoviePersonsIdFromNetServer(idPerson!!, callBack)
-            moviesRepositoryImpl.getMoviesPersonsIdFromSQLite(idPerson!!, callBackLocalIdMovie)
+            moviesRepositoryImpl.getMoviesPersonsIdFromSQLite(idPerson!!, callBackLocalIdPersons)
         } else {
             Toast.makeText(
                 App.appInstance.applicationContext,
@@ -53,15 +53,27 @@ class DetailPersonsViewModel(
 
     private fun getMoviePersonsId(docs: MutableList<Docs>) {
         for (movies in docs) {
-
             moviesPersonIdNetServer = movies.movies
-            moviesRepositoryImpl.getMovieFromSQLite(moviesPersonIdNetServer, callBackLocalIdMovie)
+            Log.d("MyLog", "moviesPersonIdNetServer.size do ${moviesPersonIdNetServer.size}")
+            if (moviesPersonIdNetServer.size > 0 && moviesPersonIdLocal.size > 0) {
+                for (indexNet in (moviesPersonIdNetServer.size - 1) downTo 0 step 1) {
+                    for (movieLocal in moviesPersonIdLocal) {
+                        if (moviesPersonIdNetServer[indexNet].id == movieLocal.id) {
+                            moviesPersonIdNetServer.removeAt(indexNet)
+                            break
+                        }
+                    }
+                }
+            }
+            if (moviesPersonIdNetServer.size > 0) {
+                Log.d("MyLog", "moviesPersonIdNetServer.size posle ${moviesPersonIdNetServer.size}")
+                moviesRepositoryImpl.getMovieFromNetServer(moviesPersonIdNetServer, callBackId)
+            }
         }
     }
 
     private val callBackLocalIdMovie2 = object : Callback<MutableList<Movie>> {
         override fun onSuccess(result: MutableList<Movie>) {
-            Log.d("MyLog1", result.toString())
         }
 
         override fun onError(error: Throwable?) {
@@ -72,15 +84,19 @@ class DetailPersonsViewModel(
 
 
 
-    private val callBackLocalIdMovie = object : Callback<MutableList<Movie>> {
+    private val callBackLocalIdPersons = object : Callback<MutableList<Movie>> {
         override fun onSuccess(result: MutableList<Movie>) {
+            moviesPersonIdLocal = result
+            if (result.size > 0) {
+                messageMoviesPersonsFragment.postValue(AppState.Success(result))
+            }
+            moviesRepositoryImpl.getMoviePersonsIdFromNetServer(idPerson!!, callBack)
 
-//            Log.d("MyLog", result.toString())
 //            val requestSheet = mutableListOf<Movies>()
 //            val booleanList = mutableListOf<Boolean>()
 //            if (result.size > 0) {
-                messageMoviesPersonsFragment.postValue(AppState.Success(result))
-            moviesRepositoryImpl.getMovieFromSQLite(moviesPersonIdNetServer, callBackLocalIdMovie2)
+//                messageMoviesPersonsFragment.postValue(AppState.Success(result))
+//            moviesRepositoryImpl.getMovieFromSQLite(moviesPersonIdNetServer, callBackLocalIdMovie2)
 //                for (index in 0 until moviesPersonIdNetServer.size) {
 //                    booleanList.add(true)
 //                    for (movieLocal in result) {
@@ -104,19 +120,18 @@ class DetailPersonsViewModel(
         }
     }
 
-    private fun getMovie(movies: MutableList<Movies>) {
-        if (movies.size > 0) {
-            for (movie in movies) {
-                moviesRepositoryImpl.getMovieFromNetServer(movie.id!!, callBackId)
-            }
-        }
-    }
+//    private fun getMovie(movies: MutableList<Movie>) {
+//        if (movies.size > 0) {
+//            for (movie in movies) {
+//                moviesRepositoryImpl.getMovieFromNetServer(movie.id!!, callBackId)
+//            }
+//        }
+//    }
 
     private val callBack = object : retrofit2.Callback<MovieListPersonsId> {
         @Throws(IOException::class)
         override fun onResponse(call: Call<MovieListPersonsId>, response: Response<MovieListPersonsId>) {
             val serverResponse: MovieListPersonsId? = response.body()
-
             if (response.isSuccessful && serverResponse != null) {
                 if (serverResponse.docs.size > 0) {
                     getMoviePersonsId(serverResponse.docs)

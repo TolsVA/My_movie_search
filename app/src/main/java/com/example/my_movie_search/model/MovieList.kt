@@ -5,6 +5,15 @@ import com.example.my_movie_search.adapters.AdapterItem
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
+//data class MovieListPersonsId (
+//  var docs  : MutableList<Docs>
+//)
+//
+//data class Docs (
+//  var id     : Long?,
+//  var movies : MutableList<Movie>
+//)
+
 @Parcelize
 data class MovieList (
   @SerializedName("docs" )

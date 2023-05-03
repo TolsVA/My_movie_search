@@ -3,6 +3,7 @@ package com.example.my_movie_search.repository.retrofit
 import com.example.my_movie_search.BuildConfig
 import com.example.my_movie_search.model.MovieList
 import com.example.my_movie_search.model.MovieListPersonsId
+import com.example.my_movie_search.model.Movies
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -43,9 +44,17 @@ class RemoteDataSource {
         .build()
         .create(MovieIdAPI::class.java)
 
-    fun getMoviesID(id: Long, callback: Callback<MovieList>) {
+    fun getMoviesID(movies: MutableList<Movies>, callback: Callback<MovieList>) {
+        val arrId = arrayListOf<Long>()
+
+        movies.forEach { movie ->
+            movie.id?.let { id ->
+                arrId.add(id)
+            }
+        }
+
         movieIdAPI
-            .getMovieId(token = BuildConfig.MOVIE_API_KEY, id = id)
+            .getMovieId(token = BuildConfig.MOVIE_API_KEY, id = arrId, limit = arrId.size)
             .enqueue(callback)
     }
 

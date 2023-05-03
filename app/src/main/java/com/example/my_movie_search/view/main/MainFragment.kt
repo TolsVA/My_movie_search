@@ -17,6 +17,7 @@ import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
 import com.example.my_movie_search.view.showSnackBar
@@ -43,6 +44,8 @@ class MainFragment : Fragment() {
         get() = _binding!!
 
     companion object {
+        //    private final SimpleDateFormat formatDate = new SimpleDateFormat("E dd.BB.yyyy 'и время' hh:mm:ss a zzz", Locale.getDefault());
+        const val TAG = "MainFragment"
         private const val ARG_FILTER = "ARG_FILTER"
     }
 
@@ -182,7 +185,7 @@ class MainFragment : Fragment() {
                         position: Int
                     ) {
                         (item as Movie).let {
-                            navigator().showDetailMovieScreen(it)
+                            navigator().showDetailMovieScreen(it, DetailMovieFragment.TAG)
                         }
                     }
                 })

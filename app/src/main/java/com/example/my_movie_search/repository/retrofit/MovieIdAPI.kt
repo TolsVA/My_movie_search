@@ -11,7 +11,7 @@ interface MovieIdAPI {
         @Header("x-api-key") token: String,
         @Query("selectFields") selectFields: String
         = "id name type rating description year poster genres countries persons movieLength videos",
-        @Query("id") id: Long,
-        @Query("limit") limit: Int = 1
+        @Query("id") id: List<Long>,
+        @Query("limit") limit: Int
     ): Call<MovieList>
 }

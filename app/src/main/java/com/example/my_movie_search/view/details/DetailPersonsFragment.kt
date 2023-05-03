@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
+import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailPersonsBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
@@ -150,19 +151,15 @@ class DetailPersonsFragment : Fragment() {
                     listItem.add(movie)
                 }
 
-                if (listItem.size == 1) {
-                    addPosition(listItem)
-                } else {
-                    addList(listItem)
-                }
+                addPosition(listItem)
                 setOnClickItem(object : ItemAdapter.OnClickItem {
                     override fun onClickItem(
                         item: AdapterItem,
                         position: Int
                     ) {
-//                        (item as Persons).let {
-//                            navigator().showDetailPersonsScreen(it)
-//                        }
+                        (item as Movie).let {
+                            navigator().showDetailMovieScreen(it, DetailMovieFragment.TAG)
+                        }
                     }
                 })
             }
@@ -215,6 +212,7 @@ class DetailPersonsFragment : Fragment() {
     }
 
     companion object {
+        const val TAG = "DetailPersonsFragment"
         private const val ARG_PERSONS = "ARG_PERSONS"
         private const val KEY_PERSONS = "KEY_PERSONS"
 

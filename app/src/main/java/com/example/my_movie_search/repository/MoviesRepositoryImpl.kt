@@ -16,8 +16,8 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
         remoteDataSource.getMovies(filter, callback)
     }
 
-    override fun getMovieFromNetServer(id: Long, callback: retrofit2.Callback<MovieList>) {
-        remoteDataSource.getMoviesID(id, callback)
+    override fun getMovieFromNetServer(movies: MutableList<Movies>, callback: retrofit2.Callback<MovieList>) {
+        remoteDataSource.getMoviesID(movies, callback)
     }
 
     override fun getMoviePersonsIdFromNetServer(
@@ -43,7 +43,7 @@ class MoviesRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Mov
     }
 
     override fun getMovieFromSQLite(
-        movies: MutableList<Movies>,
+        movies: MutableList<Movie>,
         callback: Callback<MutableList<Movie>>
     ) {
         MainActivity.getHandler().post {
