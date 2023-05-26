@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
-import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.model.room.entity.MovieDbEntity
 import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.hide
 import com.example.my_movie_search.view.show
@@ -34,7 +35,7 @@ class MainFragment : Fragment() {
         ItemAdapter()
     }
 
-    lateinit var filter: String
+    var filter: String = ""
     private lateinit var pref: SharedPreferences
 
     private var movies = arrayListOf<Movie>()
@@ -44,7 +45,6 @@ class MainFragment : Fragment() {
         get() = _binding!!
 
     companion object {
-        //    private final SimpleDateFormat formatDate = new SimpleDateFormat("E dd.BB.yyyy 'и время' hh:mm:ss a zzz", Locale.getDefault());
         const val TAG = "MainFragment"
         private const val ARG_FILTER = "ARG_FILTER"
     }
@@ -60,13 +60,18 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mainViewModel.apply {
-            getLiveDataNet().observe(viewLifecycleOwner) {
-                renderData(it)
+//            getLiveDataNet().observe(viewLifecycleOwner) {
+//                renderData(it)
+//            }
+            getLiveDataRoom().observe(viewLifecycleOwner) {
+                renderData2(it)
+//                setData(it)
             }
         }
 
         if (savedInstanceState == null)
-            mainViewModel.getMovie(filter)
+//            mainViewModel.getMovie(filter)
+            mainViewModel.getMovieRoom(filter)
 
         with(binding) {
 
@@ -76,9 +81,18 @@ class MainFragment : Fragment() {
                 filter = etFilter.text.toString()
                 progressNet.show()
                 adapter.clearList()
-                mainViewModel.getMovie(filter)
+                mainViewModel.getMovieRoom(filter)
             }
         }
+    }
+
+    private fun renderData2(listMovies: List<MovieDbEntity>) {
+        Log.d("MyLog", "renderData2 listMoviesDbEntity.toString() -> $listMovies")
+        setData(
+            listMovies.map {
+                it.toMovie()
+            } as MutableList<Movie>
+        )
     }
 
     override fun onCreateView(
@@ -157,7 +171,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun setData(listMovies: MutableList<Movie>) {
+    private fun setData(listMovies: List<Movie>) {
         movies.addAll(listMovies)
         binding.apply {
             rvListNet.layoutManager = GridLayoutManager(
@@ -179,7 +193,7 @@ class MainFragment : Fragment() {
                 }
 
                 addList(listItem)
-                setOnClickItem(object : OnClickItem {
+                setOnClickItem(object : ItemAdapter.OnClickItem {
                     override fun onClickItem(
                         item: AdapterItem,
                         position: Int

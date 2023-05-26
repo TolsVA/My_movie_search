@@ -26,36 +26,36 @@ data class MovieList (
 
 @Parcelize
 data class Movie (
-  var id_row      : Long?,
+  var idRow       : Long,
   val rating      : Rating?,
   val movieLength : Long?,
-  val id          : Long?,
+  val id          : Long,
   val type        : String?,
-  val name        : String?,
+  val name        : String,
   val description : String?,
   val year        : Long?,
   val poster      : Poster?,
-  val genres      : List<Genres>,
-  val countries   : List<Country>,
+  val genres      : MutableList<Genres>,
+  val countries   : MutableList<Country>,
   val videos      : Videos?,
-  val persons     : MutableList<Persons>
+  var persons     : List<Persons>
 ): Parcelable, AdapterItem
 
 @Parcelize
 data class Country (
-  var id_row : Long?,
+  var idRow : Long,
   val name   : String?
 ): Parcelable
 
 @Parcelize
 data class Genres (
-  var id_row : Long?,
+  var idRow : Long,
   val name   : String?
 ): Parcelable
 
 @Parcelize
 data class Persons (
-  var id_row       : Long?,
+  var idRow       : Long,
   val id           : Long?,
   val photo        : String?,
   val name         : String?,
@@ -81,7 +81,7 @@ data class Rating (
 
 @Parcelize
 data class Trailers (
-  var id_row : Long?,
+  var idRow : Long,
   val url    : String?,
   val name   : String?,
   val site   : String?,
@@ -90,6 +90,6 @@ data class Trailers (
 
 @Parcelize
 data class Videos (
-  val trailers : List<Trailers>,
-  val teasers  : List<String>
+  val trailers : MutableList<Trailers>,
+  val teasers  : MutableList<String>
 ): Parcelable

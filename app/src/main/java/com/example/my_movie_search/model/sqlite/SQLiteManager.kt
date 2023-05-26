@@ -143,7 +143,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             MovieTable.COLUMN_DESCRIPTION to movie.description,
                             MovieTable.COLUMN_YEAR to movie.year
                         ).apply {
-                            movie.id_row = insert(
+                            movie.idRow = insert(
                                 MovieTable.TABLE_NAME,
                                 null,
                                 this
@@ -167,7 +167,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                                 PersonsTable.COLUMN_PHOTO to person.photo,
                                 PersonsTable.COLUMN_NAME to person.name
                             ).apply {
-                                person.id_row = insert(
+                                person.idRow = insert(
                                     PersonsTable.TABLE_NAME,
                                     null,
                                     this
@@ -187,7 +187,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             null,
                             contentValuesOf(
                                 MoviePersonsSettingsTable
-                                    .COLUMN_MOVIE_ID_ROW to movie.id_row,
+                                    .COLUMN_MOVIE_ID_ROW to movie.idRow,
                                 MoviePersonsSettingsTable
                                     .COLUMN_MOVIE_NAME to movie.name,
                                 MoviePersonsSettingsTable
@@ -214,7 +214,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                                     TrailersTable.COLUMN_URL to trailer.url,
                                     TrailersTable.COLUMN_NAME to trailer.name
                                 ).apply {
-                                    trailer.id_row = insert(
+                                    trailer.idRow = insert(
                                         TrailersTable.TABLE_NAME,
                                         null,
                                         this
@@ -234,11 +234,11 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                                 null,
                                 contentValuesOf(
                                     MovieTrailersSettingsTable
-                                        .COLUMN_MOVIE_ID_ROW to movie.id_row,
+                                        .COLUMN_MOVIE_ID_ROW to movie.idRow,
                                     MovieTrailersSettingsTable
                                         .COLUMN_MOVIE_NAME to movie.name,
                                     MovieTrailersSettingsTable
-                                        .COLUMN_TRAILERS_ID_ROW to trailer.id_row,
+                                        .COLUMN_TRAILERS_ID_ROW to trailer.idRow,
                                     MovieTrailersSettingsTable
                                         .COLUMN_TRAILERS_NAME to trailer.name,
                                 )
@@ -260,7 +260,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             contentValuesOf(
                                 CountriesTable.COLUMN_NAME to countries.name
                             ).apply {
-                                countries.id_row = insert(
+                                countries.idRow = insert(
                                     CountriesTable.TABLE_NAME,
                                     null,
                                     this
@@ -280,7 +280,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             null,
                             contentValuesOf(
                                 MovieCountriesSettingsTable
-                                    .COLUMN_MOVIE_ID_ROW to movie.id_row,
+                                    .COLUMN_MOVIE_ID_ROW to movie.idRow,
                                 MovieCountriesSettingsTable
                                     .COLUMN_MOVIE_NAME to movie.name,
                                 MovieCountriesSettingsTable
@@ -303,7 +303,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             contentValuesOf(
                                 GenresTable.COLUMN_NAME to genre.name
                             ).apply {
-                                genre.id_row = insert(
+                                genre.idRow = insert(
                                     GenresTable.TABLE_NAME,
                                     null,
                                     this
@@ -323,7 +323,7 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                             null,
                             contentValuesOf(
                                 MovieGenresSettingsTable
-                                    .COLUMN_MOVIE_ID_ROW to movie.id_row,
+                                    .COLUMN_MOVIE_ID_ROW to movie.idRow,
                                 MovieGenresSettingsTable
                                     .COLUMN_MOVIE_NAME to movie.name,
                                 MovieGenresSettingsTable
@@ -397,19 +397,19 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                     cursor.getString(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_DESCRIPTION)),
                     cursor.getLong(cursor.getColumnIndexOrThrow(MovieTable.COLUMN_YEAR)),
                     Poster(posterUrl, null),
-                    listOf(Genres(null, null)),
-                    listOf(Country(null, null)),
+                    mutableListOf(Genres(0, null)),
+                    mutableListOf(Country(0, null)),
                     Videos(
-                        listOf(
+                        mutableListOf(
                             Trailers(
-                                null,
+                                0,
                                 null,
                                 null,
                                 null,
                                 null
                             )
                         ),
-                        listOf("")
+                        mutableListOf("")
                     ),
                     getPersonsFromDb(idRow)
                 )
