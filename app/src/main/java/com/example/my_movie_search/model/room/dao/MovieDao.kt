@@ -13,9 +13,8 @@ interface MovieDao {
     @Query("SELECT * FROM movies WHERE name GLOB :filter")
     fun findByFilter(filter: String): MutableList<MovieDbEntity>
 
-//    @Query("SELECT * FROM movies ORDER BY name ASC")
-    @Query("SELECT * FROM movies WHERE name GLOB :filter")
-    fun getAllMovie(filter: String): LiveData<List<MovieDbEntity>>
+    @Query("SELECT * FROM movies ORDER BY name ASC")
+    fun getAllMovie(): List<MovieDbEntity>
 
     @Query("SELECT * FROM movies WHERE id = :id")
     fun findByIdMovie(id: Long): MovieDbEntity

@@ -1,9 +1,11 @@
 package com.example.my_movie_search.repository
 
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Transaction
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.room.AppDatabase
 import com.example.my_movie_search.view.MainActivity
+import com.example.my_movie_search.viewModel.AppState
 
 class MoviesRoomRepositoryImpl(private val appDb: AppDatabase) : MoviesRoomRepository {
 
@@ -42,79 +44,36 @@ class MoviesRoomRepositoryImpl(private val appDb: AppDatabase) : MoviesRoomRepos
 //        }.start()
     }
 
+    override fun getAllMovie(): MutableLiveData<AppState> {
+        val liveData: MutableLiveData<AppState> = MutableLiveData()
+        MainActivity.getHandler().post {
+            liveData.postValue(
+                AppState.Success(
+                    appDb.getMovieDao().getAllMovie().map { movieDbEntity ->
+                        val movie = movieDbEntity.toMovie()
+                        movie.persons =
+                            appDb.getPersonsDao().findByIdMoviePersons(movie.idRow)
+                                .map { personsDbEntity ->
+                                    personsDbEntity.toPersons()
+                                }
+                        movie.countries =
+                            appDb.getCountryDao().findByIdMovieCountry(movie.idRow)
+                                .map {countryDbEntity ->
+                                    countryDbEntity.toCountry()
+                                }
+                        movie.genres =
+                            appDb.getGenresDao().findByIdMovieGenres(movie.idRow)
+                                .map {genresDbEntity ->
+                                    genresDbEntity.toGenres()
+                                }
+                        movie
+                    } as MutableList<Movie>
+                )
+            )
+        }
+        return liveData
+    }
 
-    override fun getAllMovie(filter: String) = appDb.getMovieDao().getAllMovie(filter)
-
-    override fun findByIdMoviePersons(idRow: Long) = appDb.getPersonsDao().findByIdMoviePersons(idRow)
-
-//    override fun findByIdMoviePersons(idRow: Long): MutableList<Persons> {
-//        val listPersons = appDb.getPersonsDao().findByIdMoviePersons(idRow).map {
-//            it.toPersons()
-//        } as MutableList<Persons>
-//        return listPersons
-//    }]
-
-//    fun insert(movies: MutableList<Movie>) {
-//        movies.map { movie ->
-//            movie.idRow = appDb.getMovieDao().insertMovies(fromMovieData(movie))
-//            movie.persons.forEach { persons ->
-//                if (persons.name != null && persons.id != null) {
-//                    persons.idRow = appDb.getPersonsDao().insertPersons(
-//                        fromPersonsData(persons)
-//                    )
-//                    appDb.getMoviePersonsSettingsDao().insertMoviePersonsSettings(
-//                        fromMoviePersonsSettingsDbEntity(
-//                            movie,
-//                            persons
-//                        )
-//                    )
-//                }
-//            }
-//            movie.videos?.trailers?.forEach { trailer ->
-//                if (trailer.url != null) {
-//                    trailer.idRow = appDb.getTrailersDao().insertTrailers(
-//                        fromTrailersData(trailer)
-//                    )
-//                    appDb.getMovieTrailersSettingsDao().insertMovieTrailersSettings(
-//                        fromMovieTrailersSettingsDbEntity(
-//                            movie,
-//                            trailer
-//                        )
-//                    )
-//                }
-//            }
-//            movie.countries.forEach { countries ->
-//                if (countries.name != null) {
-//                    countries.idRow = appDb.getCountryDao().findByCountry(countries.name)
-//                    if (countries.idRow < 1) {
-//                        countries.idRow = appDb.getCountryDao().insertCountry(
-//                            fromCountryData(countries)
-//                        )
-//                    }
-//                    appDb.getMovieCountrySettingsDao().insertMovieCountrySettings(
-//                        fromMovieCountrySettingsDbEntity(
-//                            movie,
-//                            countries
-//                        )
-//                    )
-//                }
-//            }
-//            movie.genres.forEach { genres ->
-//                if (genres.name != null) {
-//                    genres.idRow = appDb.getGenresDao().findByGenres(genres.name)
-//                    if (genres.idRow < 1) {
-//                        genres.idRow = appDb.getGenresDao().insertGenres(
-//                            fromGenresData(genres)
-//                        )
-//                    }
-//                    appDb.getMovieGenresSettingsDao().insertMovieGenresSettings(
-//                        fromMovieGenresSettingsDbEntity(
-//                            movie,
-//                            genres
-//                        )
-//                    )
-//                }
-//            }
-//        }
-//    }
+    override fun findByIdMoviePersons(idRow: Long) =
+        appDb.getPersonsDao().findByIdMoviePersons(idRow)
 }

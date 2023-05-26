@@ -63,9 +63,18 @@ class MainFragment : Fragment() {
 //            getLiveDataNet().observe(viewLifecycleOwner) {
 //                renderData(it)
 //            }
-            getLiveDataRoom().observe(viewLifecycleOwner) {
-                renderData2(it)
-//                setData(it)
+            getLiveDataRoomAll().observe(viewLifecycleOwner) {
+                if (filter == "") {
+                    renderData(it)
+                } else {
+//                    renderData(
+//                        AppState.Success(
+//                            it.map { movieDbEntity ->
+//                                movieDbEntity.toMovie()
+//                            } as MutableList<Movie>
+//                        )
+//                    )
+                }
             }
         }
 
@@ -86,14 +95,14 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun renderData2(listMovies: List<MovieDbEntity>) {
-        Log.d("MyLog", "renderData2 listMoviesDbEntity.toString() -> $listMovies")
-        setData(
-            listMovies.map {
-                it.toMovie()
-            } as MutableList<Movie>
-        )
-    }
+//    private fun renderData2(listMovies: List<MovieDbEntity>) {
+//        Log.d("MyLog", "renderData2 listMoviesDbEntity.toString() -> $listMovies")
+//        setData(
+//            listMovies.map {
+//                it.toMovie()
+//            } as MutableList<Movie>
+//        )
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

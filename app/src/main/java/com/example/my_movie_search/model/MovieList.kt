@@ -35,8 +35,8 @@ data class Movie (
   val description : String?,
   val year        : Long?,
   val poster      : Poster?,
-  val genres      : MutableList<Genres>,
-  val countries   : MutableList<Country>,
+  var genres      : List<Genres>,
+  var countries   : List<Country>,
   val videos      : Videos?,
   var persons     : List<Persons>
 ): Parcelable, AdapterItem

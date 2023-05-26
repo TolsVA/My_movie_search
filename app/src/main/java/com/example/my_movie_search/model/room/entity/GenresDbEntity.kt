@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.my_movie_search.model.Country
 import com.example.my_movie_search.model.Genres
 
 @Entity(
@@ -16,6 +17,11 @@ data class GenresDbEntity(
     @ColumnInfo(name = "id_row") @PrimaryKey(autoGenerate = true) var idRow: Long,
     @ColumnInfo(name = "name", collate = ColumnInfo.NOCASE) val name: String,
 ) {
+    fun toGenres(): Genres = Genres(
+        idRow = idRow,
+        name = name
+    )
+
     companion object {
         fun fromGenresData(genres: Genres) = GenresDbEntity(
             idRow = 0,

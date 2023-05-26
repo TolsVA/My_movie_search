@@ -20,47 +20,34 @@ private const val REQUEST_ERROR = "REQUEST_ERROR"
 private const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 
 class MainViewModel(
-    private var liveDataRoomMovie: MutableLiveData<MutableList<Movie>> = MutableLiveData(),
+//    private var liveDataRoomMovie: MutableLiveData<MutableList<Movie>> = MutableLiveData(),
     private val liveDataToObserveNet: MutableLiveData<AppState> = MutableLiveData(),
     private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource()),
     private val moviesRoomRepositoryImpl: MoviesRoomRepository = MoviesRoomRepositoryImpl(getAppDb())
 ) : ViewModel() {
 
-    var filter: String = "*"
+    var filter: String = ""
 
-    private lateinit var  liveDataRoomMovieDbEntity: LiveData<List<MovieDbEntity>>
+    private var  liveDataRoomMovie: MutableLiveData<AppState> = moviesRoomRepositoryImpl.getAllMovie()
 //    private var liveDataRoomMovie: MutableLiveData<List<Movie>> = MutableLiveData()
 
     fun getLiveDataNet() = liveDataToObserveNet
+
     fun getMovie(filter: String) = getDataFromNetSource(filter)
     fun getMovieRoom(filter: String) {
-        if (filter.isNotEmpty()) {this.filter = "*$filter*"}
-        getDataFromRoomSource(filter)
-    }
-
-    fun getLiveDataRoom(): LiveData<List<MovieDbEntity>> {
-        liveDataRoomMovieDbEntity = moviesRoomRepositoryImpl.getAllMovie(filter)
-        return liveDataRoomMovieDbEntity
-    }
-
-
-    private fun getDataFromRoomSource(filter: String) {
-//        if (filter.isNotEmpty()) {this.filter = "*$filter*"}
-//        this.filter = filter
-        getLiveDataRoom()
-        liveDataRoomMovieDbEntity = moviesRoomRepositoryImpl.getAllMovie(this.filter)
+        this.filter = filter
         moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
-//        liveDataToObserveRoom = moviesRoomRepositoryImpl.getAllMovie(filter)
     }
+
+    fun getLiveDataRoomAll() = liveDataRoomMovie
 
     private fun getDataFromNetSource(filter: String) {
 //        if (filter.isNotEmpty()) {this.filter = "*$filter*"}
-        this.filter = filter
         liveDataToObserveNet.value = AppState.Loading
-//        moviesRepositoryImpl.getMovieFromSQLite(filter, callBackLocal)
-
         moviesRepositoryImpl.getMovieFromNetServer(filter, callBack)
     }
+
+
 
     private val callBack = object : retrofit2.Callback<MovieList> {
         @Throws(IOException::class)
@@ -76,6 +63,7 @@ class MainViewModel(
 //                }
 
                 moviesRoomRepositoryImpl.insertMovieToDb(serverResponse.movies)
+
 //                Log.d("MyLog", "callBack serverResponse.movies -> ${serverResponse.movies}")
 //                Thread {
 //                    liveDataToObserveRoom = moviesRoomRepositoryImpl.getAllMovie(filter)
