@@ -3,7 +3,6 @@ package com.example.my_movie_search.model.room.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import com.example.my_movie_search.model.Genres
 import com.example.my_movie_search.model.Movie
 
@@ -26,15 +25,15 @@ import com.example.my_movie_search.model.Movie
         )
     ],
     primaryKeys = ["movie_id_row", "genres_id_row"],
-    indices = [
-        Index("genres_id_row")
-    ]
+//    indices = [
+//        Index("genres_id_row")
+//    ]
 )
 data class MovieGenresSettingsDbEntity(
     @ColumnInfo(name = "movie_id_row") val movieIdRow: Long,
-    @ColumnInfo(name = "movies_name") val movieName: String,
+    @ColumnInfo(name = "movies_name") val movieName: String?,
     @ColumnInfo(name = "genres_id_row") val genresIdRow: Long,
-    @ColumnInfo(name = "genres_name") val genresName: String,
+    @ColumnInfo(name = "genres_name") val genresName: String?,
 ) {
     companion object {
         fun fromMovieGenresSettingsDbEntity(
@@ -44,7 +43,7 @@ data class MovieGenresSettingsDbEntity(
             movieIdRow = movie.idRow,
             movieName = movie.name,
             genresIdRow = genres.idRow,
-            genresName = genres.name!!
+            genresName = genres.name
         )
     }
 }

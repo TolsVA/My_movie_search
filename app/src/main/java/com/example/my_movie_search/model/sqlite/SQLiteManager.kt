@@ -3,7 +3,6 @@ package com.example.my_movie_search.model.sqlite
 import android.database.Cursor
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.core.database.sqlite.transaction
 import com.example.my_movie_search.model.AuthException
@@ -353,16 +352,6 @@ class SQLiteManager(private val db: SQLiteDatabase) {
                 "${MoviePersonsSettingsTable.COLUMN_MOVIE_ID_ROW} " +
                 "AND ${MoviePersonsSettingsTable.TABLE_NAME}." +
                 "${MoviePersonsSettingsTable.COLUMN_PERSONS_ID}=$id"
-        Log.d("MyLog", "persons_id -> ${id.toString()}")
-//        val sql = "SELECT  ${MovieTable.TABLE_NAME}.*, ${MoviePersonsSettingsTable.TABLE_NAME}." +
-//                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
-//                "FROM ${MovieTable.TABLE_NAME} " +
-//                "INNER JOIN  ${MoviePersonsSettingsTable.TABLE_NAME} " +
-//                "ON  ${MovieTable.TABLE_NAME}.${MovieTable.COLUMN_NAME} = " +
-//                "${MoviePersonsSettingsTable.TABLE_NAME}." +
-//                "${MoviePersonsSettingsTable.COLUMN_PERSONS_NAME} " +
-//                "AND ${MoviePersonsSettingsTable.TABLE_NAME}.${MoviePersonsSettingsTable.COLUMN_PERSONS_ID} =$id"
-
         return getMovie(db.rawQuery(sql, null, null))
     }
 

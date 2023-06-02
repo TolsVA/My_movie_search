@@ -1,10 +1,8 @@
 package com.example.my_movie_search.model.room.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import androidx.room.Transaction
+import com.example.my_movie_search.app.App.Companion.getAppDb
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.room.entity.CountryDbEntity
 import com.example.my_movie_search.model.room.entity.GenresDbEntity
@@ -19,42 +17,9 @@ import com.example.my_movie_search.model.room.entity.TrailersDbEntity
 @Dao
 interface InsertMovieDao {
 
-    @Insert(entity = MovieDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovies(movieDbEntity: MovieDbEntity): Long
-
-    @Insert(entity = PersonsDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertPersons(personsDbEntity: PersonsDbEntity): Long
-
-    @Insert(entity = MoviePersonsSettingsDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertMoviePersonsSettings(moviePersonsSettingsDbEntity: MoviePersonsSettingsDbEntity)
-
-    @Insert(entity = TrailersDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrailers(trailersDbEntity: TrailersDbEntity): Long
-
-    @Insert(entity = MovieTrailersSettingsDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieTrailersSettings(movieTrailersSettingsDbEntity: MovieTrailersSettingsDbEntity)
-
-    @Insert(entity = CountryDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertCountry(countryDbEntity: CountryDbEntity): Long
-
-    @Query("SELECT * FROM country WHERE name = :name")
-    fun findByCountry(name: String): Long
-
-    @Insert(entity = MovieCountrySettingsDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieCountrySettings(movieCountrySettingsDbEntity: MovieCountrySettingsDbEntity)
-
-    @Insert(entity = GenresDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertGenres(genresDbEntity: GenresDbEntity): Long
-
-    @Query("SELECT * FROM genres WHERE name = :name")
-    fun findByGenres(name: String): Long
-
-    @Insert(entity = MovieGenresSettingsDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieGenresSettings(movieGenresSettingsDbEntity: MovieGenresSettingsDbEntity)
-
     @Transaction
     fun insertMoviesTransaction(movies: MutableList<Movie>) {
-        movies.map { movie ->
+        movies.forEach { movie ->
             movie.idRow = insertMovies(MovieDbEntity.fromMovieData(movie))
             movie.persons.forEach { persons ->
                 if (persons.name != null && persons.id != null) {
@@ -115,5 +80,46 @@ interface InsertMovieDao {
                 }
             }
         }
+    }
+
+    fun insertMovies(movieDbEntity: MovieDbEntity) =
+        getAppDb().getMovieDao().insertMovies(movieDbEntity)
+
+    fun insertPersons(personsDbEntity: PersonsDbEntity) =
+        getAppDb().getPersonsDao().insertPersons(personsDbEntity)
+
+    fun insertMoviePersonsSettings(moviePersonsSettingsDbEntity: MoviePersonsSettingsDbEntity) {
+        getAppDb().getMoviePersonsSettingsDao()
+            .insertMoviePersonsSettings(moviePersonsSettingsDbEntity)
+    }
+
+    fun insertTrailers(trailersDbEntity: TrailersDbEntity) =
+        getAppDb().getTrailersDao().insertTrailers(trailersDbEntity)
+
+    fun insertMovieTrailersSettings(movieTrailersSettingsDbEntity: MovieTrailersSettingsDbEntity) {
+        getAppDb().getMovieTrailersSettingsDao()
+            .insertMovieTrailersSettings(movieTrailersSettingsDbEntity)
+    }
+
+    fun insertCountry(countryDbEntity: CountryDbEntity) =
+        getAppDb().getCountryDao().insertCountry(countryDbEntity)
+
+    fun findByCountry(name: String) =
+        getAppDb().getCountryDao().findByCountry(name)
+
+    fun insertMovieCountrySettings(movieCountrySettingsDbEntity: MovieCountrySettingsDbEntity) {
+        getAppDb().getMovieCountrySettingsDao()
+            .insertMovieCountrySettings(movieCountrySettingsDbEntity)
+    }
+
+    fun insertGenres(genresDbEntity: GenresDbEntity) =
+        getAppDb().getGenresDao().insertGenres(genresDbEntity)
+
+    fun findByGenres(name: String) =
+        getAppDb().getGenresDao().findByGenres(name)
+
+    fun insertMovieGenresSettings(movieGenresSettingsDbEntity: MovieGenresSettingsDbEntity) {
+        getAppDb().getMovieGenresSettingsDao()
+            .insertMovieGenresSettings(movieGenresSettingsDbEntity)
     }
 }

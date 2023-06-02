@@ -1,10 +1,9 @@
 package com.example.my_movie_search.view.details
 
-import android.util.Log
-import android.widget.Toast
+//import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.my_movie_search.app.App
+import com.example.my_movie_search.app.App.Companion.getAppDb
 import com.example.my_movie_search.model.Docs
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.MovieList
@@ -12,8 +11,10 @@ import com.example.my_movie_search.model.MovieListPersonsId
 import com.example.my_movie_search.model.Movies
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.repository.Callback
-import com.example.my_movie_search.repository.MoviesRepository
-import com.example.my_movie_search.repository.MoviesRepositoryImpl
+import com.example.my_movie_search.repository.RetrofitRepository
+import com.example.my_movie_search.repository.RetrofitRepositoryImpl
+import com.example.my_movie_search.repository.RoomRepository
+import com.example.my_movie_search.repository.RoomRepositoryImpl
 import com.example.my_movie_search.repository.retrofit.RemoteDataSource
 import com.example.my_movie_search.viewModel.AppState
 import retrofit2.Call
@@ -25,40 +26,36 @@ private const val REQUEST_ERROR = "REQUEST_ERROR"
 private const val RESPONSE_EMPTY = "RESPONSE_EMPTY"
 
 class DetailPersonsViewModel(
-    private val messageDetailPersonsFragment: MutableLiveData<Persons> = MutableLiveData(),
-    private val messageMoviesPersonsFragment: MutableLiveData<AppState> = MutableLiveData(),
-    private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
+    private val liveDataMoviesPersons: MutableLiveData<AppState> = MutableLiveData(),
+    private val retrofitRepository: RetrofitRepository = RetrofitRepositoryImpl(RemoteDataSource()),
+    private val roomRepositoryImpl: RoomRepository = RoomRepositoryImpl(getAppDb())
 ) : ViewModel() {
-    private var idPerson: Long? = null
-    lateinit var moviesPersonIdLocal: MutableList<Movie>
-    private lateinit var moviesPersonIdNetServer: MutableList<Movies>
+    var personId: Long? = null
+    private var personIdRow: Long = 0
+    var moviesPersonIdLocal = listOf<Movie>()
+    private var moviesPersonIdNetServer = mutableListOf<Movies>()
 
-    fun getLiveDataDetailPersons() = messageDetailPersonsFragment
+    fun getLiveDataMoviesPersons() = liveDataMoviesPersons
 
-    fun getLiveDataMoviesPersons() = messageMoviesPersonsFragment
-
-    fun getPersonsMovie(persons: Persons?) {
-        idPerson = persons?.id
-        messageMoviesPersonsFragment.value = AppState.Loading
-        if (idPerson != null) {
-            moviesRepositoryImpl.getMoviesPersonsIdFromSQLite(idPerson!!, callBackLocalIdPersons)
-        } else {
-            Toast.makeText(
-                App.appInstance.applicationContext,
-                "Нет id у person по-иск не-воз-мо-жен",
-                Toast.LENGTH_SHORT
-            ).show()
+    fun getPersonsMovie(persons: Persons) {
+        personId = persons.id
+        personIdRow = persons.idRow
+        liveDataMoviesPersons.value = AppState.Loading
+        if (personId != null) {
+            roomRepositoryImpl.getMoviesPersonsId(personId!!, callBackLocalIdPersons)
         }
     }
 
     private fun getMoviePersonsId(docs: MutableList<Docs>) {
         for (movies in docs) {
             moviesPersonIdNetServer = movies.movies
-            Log.d("MyLog", "moviesPersonIdNetServer.size do ${moviesPersonIdNetServer.size}")
-            if (moviesPersonIdNetServer.size > 0 && moviesPersonIdLocal.size > 0) {
+            if (moviesPersonIdNetServer.size > 0 && moviesPersonIdLocal.isNotEmpty()) {
                 for (indexNet in (moviesPersonIdNetServer.size - 1) downTo 0 step 1) {
                     for (movieLocal in moviesPersonIdLocal) {
-                        if (moviesPersonIdNetServer[indexNet].id == movieLocal.id) {
+                        if (moviesPersonIdNetServer[indexNet].id == movieLocal.id ||
+                            moviesPersonIdNetServer[indexNet].id == null ||
+                            moviesPersonIdNetServer[indexNet].name == null
+                        ) {
                             moviesPersonIdNetServer.removeAt(indexNet)
                             break
                         }
@@ -66,77 +63,36 @@ class DetailPersonsViewModel(
                 }
             }
             if (moviesPersonIdNetServer.size > 0) {
-                Log.d("MyLog", "moviesPersonIdNetServer.size posle ${moviesPersonIdNetServer.size}")
-                moviesRepositoryImpl.getMovieFromNetServer(moviesPersonIdNetServer, callBackId)
+                retrofitRepository.getMovieFromNetServer(moviesPersonIdNetServer, callBackId)
             }
         }
     }
 
-    private val callBackLocalIdMovie2 = object : Callback<MutableList<Movie>> {
-        override fun onSuccess(result: MutableList<Movie>) {
-        }
-
-        override fun onError(error: Throwable?) {
-            TODO("Not yet implemented")
-        }
-
-    }
-
-
-
-    private val callBackLocalIdPersons = object : Callback<MutableList<Movie>> {
-        override fun onSuccess(result: MutableList<Movie>) {
-            moviesPersonIdLocal = result
-            if (result.size > 0) {
-                messageMoviesPersonsFragment.postValue(AppState.Success(result))
+    private val callBackLocalIdPersons = object : Callback<List<Movie>> {
+        override fun onSuccess(result: List<Movie>) {
+            if (result.isNotEmpty()) {
+                liveDataMoviesPersons.postValue(AppState.Success(result as MutableList<Movie>))
             }
-            moviesRepositoryImpl.getMoviePersonsIdFromNetServer(idPerson!!, callBack)
-
-//            val requestSheet = mutableListOf<Movies>()
-//            val booleanList = mutableListOf<Boolean>()
-//            if (result.size > 0) {
-//                messageMoviesPersonsFragment.postValue(AppState.Success(result))
-//            moviesRepositoryImpl.getMovieFromSQLite(moviesPersonIdNetServer, callBackLocalIdMovie2)
-//                for (index in 0 until moviesPersonIdNetServer.size) {
-//                    booleanList.add(true)
-//                    for (movieLocal in result) {
-//                        if (moviesPersonIdNetServer[index].id == movieLocal.id) {
-//                            booleanList[index] = false
-//                        }
-//                    }
-//                }
-//
-//                for (index in 0 until booleanList.size) {
-//                    if (booleanList[index]) {
-//                        requestSheet.add(moviesPersonIdNetServer[index])
-//                    }
-//                }
-//            }
-//            getMovie(requestSheet)
+            retrofitRepository.getMoviePersonsIdFromNetServer(personId!!, callBack)
         }
 
         override fun onError(error: Throwable?) {
 
         }
     }
-
-//    private fun getMovie(movies: MutableList<Movie>) {
-//        if (movies.size > 0) {
-//            for (movie in movies) {
-//                moviesRepositoryImpl.getMovieFromNetServer(movie.id!!, callBackId)
-//            }
-//        }
-//    }
 
     private val callBack = object : retrofit2.Callback<MovieListPersonsId> {
         @Throws(IOException::class)
-        override fun onResponse(call: Call<MovieListPersonsId>, response: Response<MovieListPersonsId>) {
+        override fun onResponse(
+            call: Call<MovieListPersonsId>,
+            response: Response<MovieListPersonsId>
+        ) {
             val serverResponse: MovieListPersonsId? = response.body()
             if (response.isSuccessful && serverResponse != null) {
                 if (serverResponse.docs.size > 0) {
                     getMoviePersonsId(serverResponse.docs)
                 } else {
-                    messageMoviesPersonsFragment.postValue(AppState.ResponseEmpty(RESPONSE_EMPTY))
+                    liveDataMoviesPersons.postValue(AppState.ResponseEmpty(RESPONSE_EMPTY))
                 }
             } else {
                 AppState.Error(Throwable(SERVER_ERROR))
@@ -144,7 +100,7 @@ class DetailPersonsViewModel(
         }
 
         override fun onFailure(call: Call<MovieListPersonsId>, t: Throwable) {
-            messageMoviesPersonsFragment.postValue(
+            liveDataMoviesPersons.postValue(
                 AppState.Error(
                     Throwable(
                         t.message ?: REQUEST_ERROR
@@ -160,10 +116,20 @@ class DetailPersonsViewModel(
             val serverResponse: MovieList? = response.body()
             if (response.isSuccessful && serverResponse != null) {
                 if (serverResponse.movies.size > 0) {
-                    messageMoviesPersonsFragment.postValue(AppState.Success(serverResponse.movies))
-                    moviesRepositoryImpl.insertMovieToDb(serverResponse.movies)
+                    val listMovie = mutableListOf<Movie>()
+                    serverResponse.movies.forEach {
+                        if (it.name != null) {
+                            listMovie.add(it)
+                        }
+                    }
+                    liveDataMoviesPersons.postValue(AppState.Success(listMovie))
+                    roomRepositoryImpl.insertMovieToDb(listMovie)
+
+//                    roomRepositoryImpl.getMoviesPersonsId(personIdRow, callBackLocalIdPersonsFull)
+
+
                 } else {
-                    messageMoviesPersonsFragment.postValue(AppState.ResponseEmpty(RESPONSE_EMPTY))
+                    liveDataMoviesPersons.postValue(AppState.ResponseEmpty(RESPONSE_EMPTY))
                 }
             } else {
                 AppState.Error(Throwable(SERVER_ERROR))
@@ -171,7 +137,7 @@ class DetailPersonsViewModel(
         }
 
         override fun onFailure(call: Call<MovieList>, t: Throwable) {
-            messageMoviesPersonsFragment.postValue(
+            liveDataMoviesPersons.postValue(
                 AppState.Error(
                     Throwable(
                         t.message ?: REQUEST_ERROR
@@ -180,4 +146,17 @@ class DetailPersonsViewModel(
             )
         }
     }
+
+//    private val callBackLocalIdPersonsFull = object : Callback<MutableList<Movie>> {
+//        override fun onSuccess(result: MutableList<Movie>) {
+//            if (result.size > 0) {
+//                Toast.makeText(App.appInstance, "result.size = ${result.size}", Toast.LENGTH_SHORT).show()
+//                liveDataMoviesPersons.postValue(AppState.Success(result))
+//            }
+//        }
+//
+//        override fun onError(error: Throwable?) {
+//
+//        }
+//    }
 }

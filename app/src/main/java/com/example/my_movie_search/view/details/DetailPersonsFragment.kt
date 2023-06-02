@@ -56,9 +56,6 @@ class DetailPersonsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         detailPersonsViewModel.apply {
-            getLiveDataDetailPersons().observe(viewLifecycleOwner) {
-                renderData(it)
-            }
             getLiveDataMoviesPersons().observe(viewLifecycleOwner) {
                 renderData(it)
             }

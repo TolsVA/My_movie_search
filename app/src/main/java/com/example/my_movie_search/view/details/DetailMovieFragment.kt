@@ -17,7 +17,7 @@ import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailMovieBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
-import com.example.my_movie_search.view.mySetText
+import com.example.my_movie_search.utils.mySetText
 import com.squareup.picasso.Picasso
 
 class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
@@ -58,10 +58,15 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        val observer = Observer<Movie> { movie ->
-//            renderData(movie)
+//        detailMovieViewModel.setMovie(movie)
+//
+//        detailMovieViewModel.apply {
+//            getLiveDataDetail().observe(viewLifecycleOwner) {
+//                movie = it
+//                renderData(movie)
+//            }
 //        }
-//        detailMovieViewModel.getLiveDataDetail().observe(viewLifecycleOwner, observer)
+
         renderData(movie)
     }
 
@@ -101,7 +106,6 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
         binding.apply {
             Picasso.get()
                 .load(movie.poster?.url)
-//                .transform(CircleTransformation())
                 .into(ivMovieDetail)
 
             rvListPersons.layoutManager = LinearLayoutManager(
@@ -138,7 +142,6 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
             tvLength.mySetText(
                 "${movie.movieLength?.div(60)}ч ${movie.movieLength?.rem(60)}м"
             )
-
 
             movie.genres.forEach {
                 tvGenres.append("${it.name} ")

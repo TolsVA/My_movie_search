@@ -22,11 +22,3 @@ interface PersonsDao {
             "AND movies_persons_settings.movie_id_row = :idRow")
     fun findByIdMoviePersons(idRow: Long): MutableList<PersonsDbEntity>
 }
-//
-//interface MovieDao {
-//    //    @Query("SELECT * FROM movies WHERE name GLOB \"* :filter *\"")
-//    @Query("SELECT * FROM movies WHERE name GLOB :filter")
-//    fun findByFilter(filter: String): MutableList<MovieDbEntity>
-//
-//    @Insert(entity = MovieDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
-//    fun insertMovies(moviesDbEntity: MovieDbEntity) : Long

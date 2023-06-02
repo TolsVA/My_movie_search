@@ -1,4 +1,4 @@
-package com.example.my_movie_search.view
+package com.example.my_movie_search.utils
 
 import android.view.View
 import android.widget.TextView

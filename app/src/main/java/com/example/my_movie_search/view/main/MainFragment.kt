@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
+import com.example.my_movie_search.adapters.ItemAdapter.OnClickItem
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.model.room.entity.MovieDbEntity
+import com.example.my_movie_search.utils.hide
+import com.example.my_movie_search.utils.show
+import com.example.my_movie_search.utils.showSnackBar
 import com.example.my_movie_search.view.details.DetailMovieFragment
-import com.example.my_movie_search.view.hide
-import com.example.my_movie_search.view.show
-import com.example.my_movie_search.view.showSnackBar
 import com.example.my_movie_search.viewModel.AppState
 import com.example.my_movie_search.viewModel.MainViewModel
 
@@ -35,7 +34,8 @@ class MainFragment : Fragment() {
         ItemAdapter()
     }
 
-    var filter: String = ""
+    private var filter = ""
+//    private var filter: String = ""
     private lateinit var pref: SharedPreferences
 
     private var movies = arrayListOf<Movie>()
@@ -45,6 +45,7 @@ class MainFragment : Fragment() {
         get() = _binding!!
 
     companion object {
+        //    private final SimpleDateFormat formatDate = new SimpleDateFormat("E dd.BB.yyyy 'и время' hh:mm:ss a zzz", Locale.getDefault());
         const val TAG = "MainFragment"
         private const val ARG_FILTER = "ARG_FILTER"
     }
@@ -53,34 +54,28 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
         pref = requireActivity().getSharedPreferences("TABLE", Context.MODE_PRIVATE)
 
-        filter = pref.getString(ARG_FILTER, "").toString()
+        filter = pref.getString(ARG_FILTER, "") ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        if (savedInstanceState == null)
+            mainViewModel.getMovieRoom(filter)
+
         mainViewModel.apply {
-//            getLiveDataNet().observe(viewLifecycleOwner) {
+//            getLiveDataRoomAll().observe(viewLifecycleOwner) {
 //                renderData(it)
 //            }
-            getLiveDataRoomAll().observe(viewLifecycleOwner) {
-                if (filter == "") {
-                    renderData(it)
-                } else {
-//                    renderData(
-//                        AppState.Success(
-//                            it.map { movieDbEntity ->
-//                                movieDbEntity.toMovie()
-//                            } as MutableList<Movie>
-//                        )
-//                    )
-                }
+
+            getLiveDataRoomFilterMovie().observe(viewLifecycleOwner) {
+                renderData(it)
+            }
+
+            getLiveDataRetrofitMovie().observe(viewLifecycleOwner) {
+                renderData(it)
             }
         }
-
-        if (savedInstanceState == null)
-//            mainViewModel.getMovie(filter)
-            mainViewModel.getMovieRoom(filter)
 
         with(binding) {
 
@@ -88,21 +83,11 @@ class MainFragment : Fragment() {
 
             btFilter.setOnClickListener {
                 filter = etFilter.text.toString()
-                progressNet.show()
                 adapter.clearList()
                 mainViewModel.getMovieRoom(filter)
             }
         }
     }
-
-//    private fun renderData2(listMovies: List<MovieDbEntity>) {
-//        Log.d("MyLog", "renderData2 listMoviesDbEntity.toString() -> $listMovies")
-//        setData(
-//            listMovies.map {
-//                it.toMovie()
-//            } as MutableList<Movie>
-//        )
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -131,7 +116,8 @@ class MainFragment : Fragment() {
                     progress.showSnackBar(
                         getString(R.string.response_empty),
                         getString(R.string.ok),
-                        { mainViewModel.getMovie(filter) }
+                        { filter = etFilter.text.toString()
+                            mainViewModel.getMovieRoom(filter) }
                     )
                 }
 
@@ -146,6 +132,10 @@ class MainFragment : Fragment() {
 
                             "REQUEST_ERROR" -> {
                                 resources.getString(R.string.request_error)
+                            }
+
+                            "RESPONSE_EMPTY" -> {
+                                resources.getString(R.string.error_intent_empty)
                             }
 
                             "java.net.UnknownHostException" -> {
@@ -173,14 +163,15 @@ class MainFragment : Fragment() {
                             }
                         },
                         getString(R.string.reload),
-                        { mainViewModel.getMovie(filter) }
+                        { filter = etFilter.text.toString()
+                            mainViewModel.getMovieRoom(filter) }
                     )
                 }
             }
         }
     }
 
-    private fun setData(listMovies: List<Movie>) {
+    private fun setData(listMovies: MutableList<Movie>) {
         movies.addAll(listMovies)
         binding.apply {
             rvListNet.layoutManager = GridLayoutManager(
@@ -202,7 +193,7 @@ class MainFragment : Fragment() {
                 }
 
                 addList(listItem)
-                setOnClickItem(object : ItemAdapter.OnClickItem {
+                setOnClickItem(object : OnClickItem {
                     override fun onClickItem(
                         item: AdapterItem,
                         position: Int

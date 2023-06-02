@@ -16,15 +16,14 @@ import com.example.my_movie_search.model.Rating
 )
 data class MovieDbEntity(
     @ColumnInfo(name = "id_row") @PrimaryKey(autoGenerate = true) var idRow: Long,
-    @ColumnInfo(name = "id") val id: Long,
-    @ColumnInfo(name = "name", collate = ColumnInfo.NOCASE) val name: String,
+    @ColumnInfo(name = "id") val id: Long?,
+    @ColumnInfo(name = "name", collate = ColumnInfo.NOCASE) val name: String?,
     @ColumnInfo(name = "poster_url") val posterUrl: String?,
     @ColumnInfo(name = "rating") val rating: Double?,
     @ColumnInfo(name = "movie_length") val movieLength: Long?,
     @ColumnInfo(name = "type", collate = ColumnInfo.NOCASE) val type: String?,
     @ColumnInfo(name = "description", collate = ColumnInfo.NOCASE) val description: String?,
-    @ColumnInfo(name = "year") val year: Long?,
-//    @ColumnInfo(name = "persons") val persons: MutableList<PersonsDbEntity>
+    @ColumnInfo(name = "year") val year: Long?
 ) {
     fun toMovie(): Movie = Movie(
         idRow = idRow,

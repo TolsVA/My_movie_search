@@ -1,15 +1,20 @@
 package com.example.my_movie_search.view.details
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_search.model.Movie
-import com.example.my_movie_search.repository.MoviesRepository
-import com.example.my_movie_search.repository.MoviesRepositoryImpl
-import com.example.my_movie_search.repository.retrofit.RemoteDataSource
 
 class DetailMovieViewModel(
-    private val messageDetailFragment: MutableLiveData<Movie> = MutableLiveData(),
-    private val moviesRepositoryImpl: MoviesRepository = MoviesRepositoryImpl(RemoteDataSource())
+//    private val liveDataPersons: MutableLiveData<Movie> = MutableLiveData(),
+//    private val roomRepositoryImpl: RoomRepository = RoomRepositoryImpl(App.getAppDb()),
 ) : ViewModel() {
-    fun getLiveDataDetail() = messageDetailFragment
+
+     private var liveDataRoomMovie: LiveData<Movie> = MutableLiveData()
+//
+//
+//    fun getLiveDataDetail() = liveDataRoomMovie
+//    fun setMovie(movie: Movie) {
+//        liveDataRoomMovie = roomRepositoryImpl.getMovie(movie.id!!)
+//    }
 }
