@@ -15,26 +15,17 @@ import com.example.my_movie_search.model.room.entity.MovieDbEntity
 
 @Dao
 interface MovieDao {
-
-    @Query("SELECT * FROM movies WHERE name GLOB :filter ORDER BY name ASC")
+    @Query("SELECT * FROM movies WHERE name GLOB '*'||:filter||'*' ORDER BY name ASC")
     fun findByFilter(filter: String): MutableList<MovieDbEntity>
 
     @Query("SELECT * FROM movies ORDER BY name ASC")
     fun getAllMovie(): LiveData<MutableList<MovieDbEntity>>
-
 
     @Query("SELECT * FROM movies WHERE id = :id")
     fun findByIdMovie(id: Long): LiveData<MovieDbEntity>
 
     @Insert(entity = MovieDbEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertMovies(movieDbEntity: MovieDbEntity): Long
-
-
-//    SELECT "movies".*, "movies_persons_settings"."persons_id"
-//    FROM "movies"
-//    INNER JOIN "movies_persons_settings"
-//    ON "movies"."id_row" = "movies_persons_settings"."movie_id_row"
-//    AND "movies_persons_settings"."persons_id"= '1514'
 
     @Query("SELECT movies.*, movies_persons_settings.persons_id_row " +
             "FROM movies " +
@@ -64,29 +55,6 @@ interface MovieDao {
             movie
         } as MutableList<Movie>
     }
-
-
-
-
-
-//    @Transaction
-//    fun getMoviePersonsId(idRow: Long) = fillMovie(findByIdPersons(idRow))
-//
-//    fun fillMovie(movies: MutableList<MovieDbEntity>): MutableList<Movie> {
-//        return movies.map { movieDbEntity ->
-//            val movie = movieDbEntity.toMovie()
-//            movie.persons = findByIdMoviePersons(movie.idRow)
-//            movie.countries = findByIdMovieCountry(movie.idRow)
-//            movie.genres = findByIdMovieGenres(movie.idRow)
-//            movie
-//        }as MutableList<Movie>
-//    }
-//
-//    @Transaction
-//    fun getFindByFilter(filter: String) = fillMovie(findByFilter(filter))
-
-
-
 
     fun findByIdMoviePersons(idRow: Long): List<Persons> {
         return getAppDb().getPersonsDao().findByIdMoviePersons(idRow).map { personsDbEntity ->

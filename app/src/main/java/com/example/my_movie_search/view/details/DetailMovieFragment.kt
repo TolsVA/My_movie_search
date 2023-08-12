@@ -72,6 +72,8 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
 
     override fun getTitleRes(): Int = R.string.detailing
 
+    override fun getTitle() = movie.type.toString()
+
     override fun getCustomAction(): MutableList<CustomAction> {
         val customActionList = mutableListOf<CustomAction>()
 

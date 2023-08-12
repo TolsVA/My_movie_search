@@ -87,14 +87,21 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
+        updateUi()
         return true
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        onBackPressedDispatcher.onBackPressed()
+        updateUi()
     }
 
     private fun updateUi() {
         val fragment = currentFragment
 
         if (fragment is HasCustomTitle) {
-            binding.toolbar.title = getString(fragment.getTitleRes())
+            binding.toolbar.title = "${getString(fragment.getTitleRes())} ${fragment.getTitle()}"
         } else {
             binding.toolbar.title = getString(R.string.movie_search)
         }
@@ -151,6 +158,7 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     override fun goBack() {
         onBackPressedDispatcher.onBackPressed()
+        updateUi()
     }
 
     override fun goToMenu() {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentMainBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.utils.hide
+import com.example.my_movie_search.utils.hideKeyboard
 import com.example.my_movie_search.utils.show
 import com.example.my_movie_search.utils.showSnackBar
 import com.example.my_movie_search.view.details.DetailMovieFragment
@@ -34,8 +36,8 @@ class MainFragment : Fragment() {
         ItemAdapter()
     }
 
-    private var filter = ""
-//    private var filter: String = ""
+    lateinit var filter: String
+
     private lateinit var pref: SharedPreferences
 
     private var movies = arrayListOf<Movie>()
@@ -45,7 +47,6 @@ class MainFragment : Fragment() {
         get() = _binding!!
 
     companion object {
-        //    private final SimpleDateFormat formatDate = new SimpleDateFormat("E dd.BB.yyyy 'и время' hh:mm:ss a zzz", Locale.getDefault());
         const val TAG = "MainFragment"
         private const val ARG_FILTER = "ARG_FILTER"
     }
@@ -60,14 +61,9 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        if (savedInstanceState == null)
-            mainViewModel.getMovieRoom(filter)
+        mainViewModel.getMovieRoom(filter)
 
         mainViewModel.apply {
-//            getLiveDataRoomAll().observe(viewLifecycleOwner) {
-//                renderData(it)
-//            }
-
             getLiveDataRoomFilterMovie().observe(viewLifecycleOwner) {
                 renderData(it)
             }
@@ -81,10 +77,24 @@ class MainFragment : Fragment() {
 
             etFilter.setText(filter)
 
+            etFilter.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                    if (event?.action == KeyEvent.ACTION_DOWN) {
+                        saveFilter()
+                        adapter.clearList()
+                        mainViewModel.getMovieRoom(filter)
+                        v?.hideKeyboard()
+                        return true
+                    }
+                    return false
+                }
+            })
+
             btFilter.setOnClickListener {
-                filter = etFilter.text.toString()
+                saveFilter()
                 adapter.clearList()
                 mainViewModel.getMovieRoom(filter)
+                etFilter.hideKeyboard()
             }
         }
     }
@@ -116,7 +126,7 @@ class MainFragment : Fragment() {
                     progress.showSnackBar(
                         getString(R.string.response_empty),
                         getString(R.string.ok),
-                        { filter = etFilter.text.toString()
+                        { saveFilter()
                             mainViewModel.getMovieRoom(filter) }
                     )
                 }
@@ -163,7 +173,7 @@ class MainFragment : Fragment() {
                             }
                         },
                         getString(R.string.reload),
-                        { filter = etFilter.text.toString()
+                        { saveFilter()
                             mainViewModel.getMovieRoom(filter) }
                     )
                 }
@@ -209,13 +219,17 @@ class MainFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        saveFilter()
+        _binding = null
+        adapter.setOnClickItem(null)
+    }
+
+    private fun saveFilter() {
         filter = binding.etFilter.text.toString()
 
         val editor: SharedPreferences.Editor = pref.edit()
         editor
             .putString(ARG_FILTER, filter)
             .apply()
-        _binding = null
-        adapter.setOnClickItem(null)
     }
 }

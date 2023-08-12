@@ -10,14 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
+import com.example.my_movie_search.contract.HasCustomTitle
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailPersonsBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
+import com.example.my_movie_search.utils.showSnackBar
 import com.example.my_movie_search.viewModel.AppState
 import com.squareup.picasso.Picasso
 
-class DetailPersonsFragment : Fragment() {
+class DetailPersonsFragment : Fragment(), HasCustomTitle {
     private val detailPersonsViewModel: DetailPersonsViewModel by lazy {
         ViewModelProvider(requireActivity())[DetailPersonsViewModel::class.java]
     }
@@ -80,53 +82,53 @@ class DetailPersonsFragment : Fragment() {
 
                 is AppState.ResponseEmpty -> {
 //                    progress.hide()
-//                    progress.showSnackBar(
-//                        getString(R.string.response_empty),
-//                        getString(R.string.ok),
-//                        { detailPersonsViewModel.getPersonsMovie(persons) }
-//                    )
+                    root.showSnackBar(
+                        getString(R.string.response_empty),
+                        getString(R.string.ok),
+                        { detailPersonsViewModel.getPersonsMovie(persons) }
+                    )
                 }
 
                 is AppState.Error -> {
 //                    progress.hide()
-//                    progress.showSnackBar(
-//                        when (appState.error.message.toString()) {
-//
-//                            "SERVER_ERROR" -> {
-//                                resources.getString(R.string.server_error)
-//                            }
-//
-//                            "REQUEST_ERROR" -> {
-//                                resources.getString(R.string.request_error)
-//                            }
-//
-//                            "java.net.UnknownHostException" -> {
-//                                getString(R.string.unknown_host_exception)
-//                            }
-//
-//                            "java.io.FileNotFoundException" -> {
-//                                getString(R.string.file_not_found_exception)
-//                            }
-//
-//                            "java.net.MalformedURLException" -> {
-//                                getString(R.string.malformed_url_exception)
-//                            }
-//
-//                            "java.net.SocketTimeoutException" -> {
-//                                getString(R.string.socket_timeout_exception)
-//                            }
-//
-//                            "java.lang.NullPointerException" -> {
-//                                "java.lang.NullPointerException"
-//                            }
-//
-//                            else -> {
-//                                appState.error.message.toString()
-//                            }
-//                        },
-//                        getString(R.string.reload),
-//                        { detailPersonsViewModel.getPersonsMovie(persons) }
-//                    )
+                    root.showSnackBar(
+                        when (appState.error.message.toString()) {
+
+                            "SERVER_ERROR" -> {
+                                resources.getString(R.string.server_error)
+                            }
+
+                            "REQUEST_ERROR" -> {
+                                resources.getString(R.string.request_error)
+                            }
+
+                            "java.net.UnknownHostException" -> {
+                                getString(R.string.unknown_host_exception)
+                            }
+
+                            "java.io.FileNotFoundException" -> {
+                                getString(R.string.file_not_found_exception)
+                            }
+
+                            "java.net.MalformedURLException" -> {
+                                getString(R.string.malformed_url_exception)
+                            }
+
+                            "java.net.SocketTimeoutException" -> {
+                                getString(R.string.socket_timeout_exception)
+                            }
+
+                            "java.lang.NullPointerException" -> {
+                                "java.lang.NullPointerException"
+                            }
+
+                            else -> {
+                                appState.error.message.toString()
+                            }
+                        },
+                        getString(R.string.reload),
+                        { detailPersonsViewModel.getPersonsMovie(persons) }
+                    )
                 }
             }
         }
@@ -221,4 +223,7 @@ class DetailPersonsFragment : Fragment() {
                 }
             }
     }
+
+    override fun getTitleRes(): Int = R.string.detailing
+    override fun getTitle() = persons.profession?.substring(0, persons.profession!!.length-1).toString()
 }

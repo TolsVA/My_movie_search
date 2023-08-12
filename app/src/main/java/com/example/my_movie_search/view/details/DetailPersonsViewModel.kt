@@ -1,6 +1,7 @@
 package com.example.my_movie_search.view.details
 
 //import android.widget.Toast
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_search.app.App.Companion.getAppDb
@@ -49,6 +50,11 @@ class DetailPersonsViewModel(
     private fun getMoviePersonsId(docs: MutableList<Docs>) {
         for (movies in docs) {
             moviesPersonIdNetServer = movies.movies
+            Log.d(
+                "MyLog",
+                "moviesPersonIdNetServer.size = ${moviesPersonIdNetServer.size} " +
+                        "moviesPersonIdLocal.size = ${moviesPersonIdLocal.size}"
+            )
             if (moviesPersonIdNetServer.size > 0 && moviesPersonIdLocal.isNotEmpty()) {
                 for (indexNet in (moviesPersonIdNetServer.size - 1) downTo 0 step 1) {
                     for (movieLocal in moviesPersonIdLocal) {
@@ -62,6 +68,10 @@ class DetailPersonsViewModel(
                     }
                 }
             }
+            Log.d(
+                "MyLog",
+                "разница = ${moviesPersonIdNetServer.size}"
+            )
             if (moviesPersonIdNetServer.size > 0) {
                 retrofitRepository.getMovieFromNetServer(moviesPersonIdNetServer, callBackId)
             }
@@ -70,6 +80,7 @@ class DetailPersonsViewModel(
 
     private val callBackLocalIdPersons = object : Callback<List<Movie>> {
         override fun onSuccess(result: List<Movie>) {
+            moviesPersonIdLocal = result
             if (result.isNotEmpty()) {
                 liveDataMoviesPersons.postValue(AppState.Success(result as MutableList<Movie>))
             }

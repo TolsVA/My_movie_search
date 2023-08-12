@@ -25,26 +25,12 @@ class MainViewModel(
     private val roomRepositoryImpl: RoomRepository = RoomRepositoryImpl(getAppDb()),
     private var liveDataRoomAllMovie: MutableLiveData<AppState> = roomRepositoryImpl.getAllMovie()
 ) : ViewModel() {
-    var filter: String = "*"
+    lateinit var filter: String
 
     fun getMovieRoom(filter: String) {
-        this.filter = if (filter == "") {
-            liveDataRoomAllMovie.value = AppState.Loading
-            "*"
-        } else {
-            liveDataRoomFilterMovie.value = AppState.Loading
-            "*$filter*"
-        }
-
-        roomRepositoryImpl.getAllMovieFilter("*$filter*", callBackRoomMovieFilter)
-//            if (listMovie.size > 0) {
-//                liveDataRoomFilterMovie.postValue(
-//                    AppState.Success(listMovie)
-//                )
-//            }
-
-
-//        retrofitRepImpl.getMovieFromNetServer(filter, callBack)
+        this.filter = filter
+        roomRepositoryImpl.getAllMovieFilter(filter, callBackRoomMovieFilter)
+        retrofitRepImpl.getMovieFromNetServer(filter, callBack)
     }
 
     private val callBackRoomMovieFilter = object : Callback<MutableList<Movie>> {
@@ -78,19 +64,7 @@ class MainViewModel(
                 }
                 roomRepositoryImpl.insertMovieToDb(listMovie)
 
-//                MainActivity.getHandler().post {
-//                    val listMovieRoom = roomRepositoryImpl.getAllMovieFilter(
-//                        filter,
-//                        callBackRoomMovieFilter
-//                    )
-//                    if (listMovieRoom.size > 0) {
-//                        liveDataRoomFilterMovie.postValue(
-//                            AppState.Success(listMovieRoom)
-//                        )
-//                    } else {
-//                        liveDataRetrofitMovie.postValue(AppState.Error(Throwable(RESPONSE_EMPTY)))
-//                    }
-//                }
+                roomRepositoryImpl.getAllMovieFilter(filter, callBackRoomMovieFilter)
             } else if (!response.isSuccessful) {
                 liveDataRetrofitMovie.postValue(AppState.Error(Throwable(RESPONSE_EMPTY)))
             } else {
