@@ -76,7 +76,7 @@ class ContentProviderFragment : Fragment() {
                 context?.let {
                     AlertDialog.Builder(it)
                         .setTitle("Доступ к контактам")
-                        .setMessage("Объяснение как то так")
+                        .setMessage("Объяснение как то так!!!!!")
                         .setNegativeButton("Закрыть") { dialog, _ ->
                             dialog.dismiss() }
                         .create()
