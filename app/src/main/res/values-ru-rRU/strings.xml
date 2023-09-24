@@ -54,5 +54,9 @@
     <string name="detailing">Детализация</string>
     <string name="settings">Настройки</string>
     <string name="profession">Профессия:</string>
-
+    <string name="call">Вызов</string>
+    <string name="message">SMS</string>
+    <string name="gallery">Галерея</string>
+    <string name="enlarge_image">pl изображение</string>
+    <string name="contacts">Контакты</string>
 </resources>

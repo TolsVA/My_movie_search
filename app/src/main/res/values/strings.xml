@@ -54,4 +54,9 @@
     <string name="detailing">Detailing</string>
     <string name="settings">settings</string>
     <string name="profession">Profession</string>
+    <string name="call">call</string>
+    <string name="message">message</string>
+    <string name="gallery">gallery</string>
+    <string name="enlarge_image">enlarge_image</string>
+    <string name="contacts">contacts</string>
 </resources>

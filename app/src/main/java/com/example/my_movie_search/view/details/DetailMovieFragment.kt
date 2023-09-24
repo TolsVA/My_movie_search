@@ -12,15 +12,17 @@ import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
 import com.example.my_movie_search.contract.CustomAction
 import com.example.my_movie_search.contract.HasCustomAction
+import com.example.my_movie_search.contract.HasCustomActionBottomNavigation
 import com.example.my_movie_search.contract.HasCustomTitle
 import com.example.my_movie_search.contract.navigator
 import com.example.my_movie_search.databinding.FragmentDetailMovieBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.utils.mySetText
+import com.example.my_movie_search.view.contentprovider.ContentProviderFragment
 import com.squareup.picasso.Picasso
 
-class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
+class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCustomActionBottomNavigation {
 
 //    private val detailMovieViewModel: DetailMovieViewModel by lazy {
 //        ViewModelProvider(requireActivity())[DetailMovieViewModel::class.java]
@@ -93,6 +95,44 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction {
                 textRes = R.string.search,
                 onCustomAction = Runnable {
                     onConfirmPressed()
+                }
+            )
+        )
+
+        return customActionList
+    }
+
+    override fun getCustomActionBottomNavigation(): MutableList<CustomAction> {
+        val customActionList = mutableListOf<CustomAction>()
+
+        customActionList.add(
+            CustomAction(
+                iconRes = android.R.drawable.sym_action_call,
+                textRes = R.string.call,
+                onCustomAction = Runnable {
+                    Toast.makeText(requireContext(), resources.getString(R.string.call), Toast.LENGTH_SHORT).show()
+                }
+            )
+        )
+
+        customActionList.add(
+            CustomAction(
+                iconRes = R.drawable.baseline_message_24,
+                textRes = R.string.message,
+                onCustomAction = Runnable {
+                    Toast.makeText(requireContext(), resources.getString(R.string.message), Toast.LENGTH_SHORT).show()
+                }
+            )
+        )
+
+        customActionList.add(
+            CustomAction(
+                iconRes = R.drawable.outline_contact_phone_24,
+                textRes = R.string.contacts,
+                onCustomAction = Runnable {
+//                    Toast.makeText(requireContext(), resources.getString(R.string.contacts), Toast.LENGTH_SHORT).show()
+
+                    navigator().showContentProviderFragment(ContentProviderFragment.TAG)
                 }
             )
         )

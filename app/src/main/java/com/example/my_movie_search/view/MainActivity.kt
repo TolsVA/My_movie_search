@@ -1,6 +1,5 @@
 package com.example.my_movie_search.view
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +8,6 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -21,12 +19,16 @@ import com.example.my_movie_search.R
 import com.example.my_movie_search.app.App
 import com.example.my_movie_search.contract.CustomAction
 import com.example.my_movie_search.contract.HasCustomAction
+import com.example.my_movie_search.contract.HasCustomActionBottomNavigation
 import com.example.my_movie_search.contract.HasCustomTitle
 import com.example.my_movie_search.contract.Navigator
 import com.example.my_movie_search.contract.ResultListener
 import com.example.my_movie_search.databinding.ActivityMainBinding
 import com.example.my_movie_search.model.Movie
 import com.example.my_movie_search.model.Persons
+import com.example.my_movie_search.utils.hide
+import com.example.my_movie_search.utils.show
+import com.example.my_movie_search.view.contentprovider.ContentProviderFragment
 import com.example.my_movie_search.view.details.DetailMovieFragment
 import com.example.my_movie_search.view.details.DetailPersonsFragment
 import com.example.my_movie_search.view.main.MainFragment
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         ) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState)
             updateUi()
+            updateUiBottomNavigationView()
         }
     }
 
@@ -80,6 +83,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)
+//        binding.bottomNavigation.visibility = View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -89,6 +93,7 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
+        updateUiBottomNavigationView()
         updateUi()
         return true
     }
@@ -96,6 +101,7 @@ class MainActivity : AppCompatActivity(), Navigator {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         onBackPressedDispatcher.onBackPressed()
+        updateUiBottomNavigationView()
         updateUi()
     }
 
@@ -120,6 +126,37 @@ class MainActivity : AppCompatActivity(), Navigator {
             createCustomToolbarAction(fragment.getCustomAction())
         } else {
             binding.toolbar.menu.clear()
+        }
+    }
+
+    private fun updateUiBottomNavigationView() {
+        val fragment = currentFragment
+
+        if (fragment is HasCustomActionBottomNavigation) {
+            createCustomActionBottomNavigation(fragment.getCustomActionBottomNavigation())
+            binding.bottomNavigation.show()
+        } else {
+            binding.bottomNavigation.hide()
+        }
+    }
+
+    private fun createCustomActionBottomNavigation(customActions: MutableList<CustomAction>) {
+        binding.bottomNavigation.menu.clear()
+
+        for (action in customActions) {
+            val iconDrawable =
+                DrawableCompat.wrap(ContextCompat.getDrawable(this, action.iconRes)!!)
+            iconDrawable.setTint(Color.WHITE)
+
+            val menuItem = binding.bottomNavigation.menu.add(action.textRes)
+            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            menuItem.icon = iconDrawable
+
+            menuItem.setOnMenuItemClickListener {
+                action.onCustomAction.run()
+                menuItem.isChecked = true
+                return@setOnMenuItemClickListener true
+            }
         }
     }
 
@@ -157,6 +194,11 @@ class MainActivity : AppCompatActivity(), Navigator {
     override fun showDetailMovieScreen(movie: Movie, TAG: String) {
         launchFragment(DetailMovieFragment.newInstance(movie), TAG)
     }
+
+    override fun showContentProviderFragment(tag: String) {
+        launchFragment(ContentProviderFragment.newInstance(), tag)
+    }
+
 
     override fun goBack() {
         onBackPressedDispatcher.onBackPressed()

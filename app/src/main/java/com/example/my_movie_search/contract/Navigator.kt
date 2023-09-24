@@ -30,4 +30,6 @@ interface Navigator {
         owner: LifecycleOwner,
         listener: ResultListener<T>
      )
+
+    fun showContentProviderFragment(tag: String)
 }
