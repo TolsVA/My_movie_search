@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.details.DetailMovieFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_movie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="16dp">
+
+            <ImageView
+                android:id="@+id/iv_persons_detail"
+                android:layout_width="0dp"
+                android:layout_height="220dp"
+                android:background="@drawable/ic_launcher_foreground"
+                app:layout_constraintDimensionRatio="@string/square"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_persons_detail"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/view_name"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/tv_name"
+                app:layout_constraintStart_toStartOf="@+id/tv_name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+            <TextView
+                android:id="@+id/tv_title_profession"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:fontFamily="casual"
+                android:gravity="top"
+                android:textSize="@dimen/text_size_detail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/iv_persons_detail"
+                app:layout_constraintTop_toBottomOf="@+id/view_name" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="tv_title_profession, iv_persons_detail" />
+
+            <TextView
+                android:id="@+id/tv_persons_movie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:hint="Фильмы с его(её) участием:"
+                android:textSize="@dimen/text_size_detail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_description" />
+
+            <View
+                android:id="@+id/view_movie"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/tv_persons_movie"
+                app:layout_constraintStart_toStartOf="@+id/tv_persons_movie"
+                app:layout_constraintTop_toBottomOf="@+id/tv_persons_movie" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list_movie"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_persons_movie" />
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/progress_net"-->
+<!--                style="?android:attr/progressBarStyleLarge"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:visibility="gone" />-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

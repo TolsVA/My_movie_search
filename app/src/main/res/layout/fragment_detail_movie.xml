@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.details.DetailMovieFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_movie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="16dp">
+
+            <ImageView
+                android:id="@+id/iv_movie_detail"
+                android:layout_width="0dp"
+                android:layout_height="220dp"
+                app:layout_constraintDimensionRatio="@string/square"
+                android:background="@drawable/ic_launcher_foreground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_movie_detail"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_title_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="casual"
+                    android:gravity="top"
+                    android:hint="Название:"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="tv_title_name, tv_title_type,
+                    tv_title_length, tv_title_rating, tv_title_year, tv_title_genres,
+                    tv_title_countries" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/text_size_detail"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/barrier"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_title_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Тип:"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title_name"
+                    app:layout_constraintTop_toBottomOf="@+id/view_name" />
+
+                <View
+                    android:id="@+id/view_name"
+                    android:layout_width="0dp"
+                    android:layout_height="0.1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tv_title_name"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+                <TextView
+                    android:id="@+id/tv_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_title_type"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_name"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_type" />
+
+                <TextView
+                    android:id="@+id/tv_title_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Прод.:"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title_type"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_type" />
+
+                <TextView
+                    android:id="@+id/tv_length"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_title_length"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_type"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_length" />
+
+                <TextView
+                    android:id="@+id/tv_title_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Рейтинг:"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title_length"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_length" />
+
+                <TextView
+                    android:id="@+id/tv_rating"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_title_rating"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_length"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_rating"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/tv_title_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Год:"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title_rating"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_rating" />
+
+                <TextView
+                    android:id="@+id/tv_year"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_rating"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_year" />
+
+
+                <TextView
+                    android:id="@+id/tv_title_genres"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:hint="Жанр:"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title_year"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_year" />
+
+                <TextView
+                    android:id="@+id/tv_genres"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_year"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_genres" />
+
+                <TextView
+                    android:id="@+id/tv_title_countries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Страна:"
+                    android:layout_marginTop="4dp"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintStart_toStartOf="@+id/tv_title_genres"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_genres" />
+
+                <TextView
+                    android:id="@+id/tv_countries"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_genres"
+                    app:layout_constraintTop_toTopOf="@+id/tv_title_countries" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_title_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/iv_movie_detail"
+                android:hint="Краткое описание:"
+                android:textSize="@dimen/text_size_detail"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrier_description" />
+
+            <View
+                android:id="@+id/view_movie"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/tv_title_description"
+                app:layout_constraintStart_toStartOf="@+id/tv_title_description"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_description" />
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="@dimen/text_size_detail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_movie" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="constraintLayout, iv_movie_detail" />
+
+            <TextView
+                android:id="@+id/tv_persons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:hint="В съемках приняли участие:"
+                android:textSize="@dimen/text_size_detail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list_persons"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="top"
+                app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+                app:layout_constraintStart_toStartOf="@+id/tv_persons"
+                app:layout_constraintTop_toBottomOf="@id/tv_persons" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>
