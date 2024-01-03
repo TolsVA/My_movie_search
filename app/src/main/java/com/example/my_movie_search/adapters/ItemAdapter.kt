@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.my_movie_search.R
 import com.example.my_movie_search.model.Movie
+import com.example.my_movie_search.model.MyContact
 import com.example.my_movie_search.model.Persons
 import com.squareup.picasso.Picasso
 
@@ -15,6 +18,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
     companion object {
         private const val TYPE_MOVIE = 0
         private const val TYPE_PERSONS = 1
+        private const val TYPE_CONTACTS = 2
     }
 
     //    private var movieList: MutableList<Movie> =  mutableListOf()
@@ -35,41 +39,85 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
 //        this.movieList = movieList
 //    }
 
-    fun addList(_items: MutableList<AdapterItem>) {
-        items = _items
+    fun addList(items: MutableList<AdapterItem>) {
+        this.items = items
     }
 
     inner class ItemHolder(item: View) : RecyclerView.ViewHolder(item) {
-        fun bind(item: AdapterItem, imageView: ImageView) {
+        fun bind(item: AdapterItem, position: Int, view: View) {
 
             val url = when (item) {
                 is Movie -> {
                     item.poster?.url
                 }
+
                 is Persons -> {
                     item.photo
                 }
+
+                is MyContact -> {
+                    item.photo
+                }
+
                 else -> {
                     ""
                 }
             }
 
-            Picasso.get()
-                .load(
-                    url
-                )
-//                .transform(CircleTransformation())
+            Glide
+                .with(view.context)
+                .load(url)
                 .placeholder(R.drawable.ic_launcher_foreground)
-                .into(imageView)
+                .into(
+                    if (getItemViewType(position) == TYPE_MOVIE || getItemViewType(position) == TYPE_PERSONS) {
+                        view.rootView.findViewById<ImageView>(R.id.iv_movie_portrait)
+                    } else {
+                        view.rootView.findViewById<ImageView>(R.id.iv_contact)
+                    }
+                )
+
+//            Picasso.get()
+//                .load(
+//                    url
+//                )
+////                .transform(CircleTransformation())
+//                .placeholder(R.drawable.ic_launcher_foreground)
+//                .into(
+//                    if (getItemViewType(position) == TYPE_MOVIE || getItemViewType(position) == TYPE_PERSONS) {
+//                        view.rootView?.findViewById(R.id.iv_movie_portrait)
+//                    } else {
+//                        view.rootView?.findViewById(R.id.iv_contact)
+//                    }
+//                )
+            if (item is MyContact) {
+                view.rootView.findViewById<TextView>(R.id.textViewTell).text = item.phone
+                view.rootView.findViewById<TextView>(R.id.textView3).text = item.name
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemAdapter.ItemHolder {
         return ItemHolder(
-            LayoutInflater
+            item = LayoutInflater
                 .from(parent.context)
                 .inflate(
-                    if (viewType == TYPE_MOVIE) R.layout.item_movie_portrait else R.layout.item_movie_portrait,
+                    when (viewType) {
+                        TYPE_MOVIE -> {
+                            R.layout.item_movie_portrait
+                        }
+
+                        TYPE_PERSONS -> {
+                            R.layout.item_movie_portrait
+                        }
+
+                        TYPE_CONTACTS -> {
+                            R.layout.item_my_contacts
+                        }
+
+                        else -> {
+                            R.layout.item_movie_portrait
+                        }
+                    },
                     parent,
                     false
                 )
@@ -77,20 +125,23 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (items[position] is ItemMovie) {
-            return TYPE_MOVIE
-        }
-        return if (items[position] is ItemPersons) {
+        return if (items[position] is Movie) {
+            TYPE_MOVIE
+        } else if (items[position] is Persons) {
             TYPE_PERSONS
+        } else if (items[position] is MyContact) {
+            TYPE_CONTACTS
         } else super.getItemViewType(position)
     }
 
     override fun onBindViewHolder(holder: ItemAdapter.ItemHolder, position: Int) {
         holder.itemView.apply {
             val item = items[position]
+
             holder.bind(
                 item,
-                findViewById(R.id.iv_movie_portrait)
+                position,
+                this.rootView
             )
 
             setOnClickListener {

@@ -132,7 +132,7 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
                 onCustomAction = Runnable {
 //                    Toast.makeText(requireContext(), resources.getString(R.string.contacts), Toast.LENGTH_SHORT).show()
 
-                    navigator().showContentProviderFragment(ContentProviderFragment.TAG)
+                    navigator().showContentProviderFragment(ContentProviderFragment.TAG) //бла
                 }
             )
         )

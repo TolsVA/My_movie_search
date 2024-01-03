@@ -127,6 +127,8 @@ class MainActivity : AppCompatActivity(), Navigator {
         } else {
             binding.toolbar.menu.clear()
         }
+
+        updateUiBottomNavigationView()
     }
 
     private fun updateUiBottomNavigationView() {
@@ -187,12 +189,12 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     }
 
-    override fun showDetailPersonsScreen(persons: Persons, TAG: String) {
-        launchFragment(DetailPersonsFragment.newInstance(persons), TAG)
+    override fun showDetailPersonsScreen(persons: Persons, tag: String) {
+        launchFragment(DetailPersonsFragment.newInstance(persons), tag)
     }
 
-    override fun showDetailMovieScreen(movie: Movie, TAG: String) {
-        launchFragment(DetailMovieFragment.newInstance(movie), TAG)
+    override fun showDetailMovieScreen(movie: Movie, tag: String) {
+        launchFragment(DetailMovieFragment.newInstance(movie), tag)
     }
 
     override fun showContentProviderFragment(tag: String) {
@@ -232,7 +234,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    private fun launchFragment(fragment: Fragment, TAG: String) {
+    private fun launchFragment(fragment: Fragment, tag: String) {
         supportFragmentManager
             .beginTransaction()
             .setCustomAnimations(
@@ -243,7 +245,7 @@ class MainActivity : AppCompatActivity(), Navigator {
             )
             .hide(currentFragment)
             .addToBackStack("")
-            .add(R.id.container, fragment, TAG)
+            .add(R.id.container, fragment, tag)
             .commit()
     }
 }
