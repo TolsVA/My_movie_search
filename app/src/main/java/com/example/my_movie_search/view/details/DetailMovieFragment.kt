@@ -1,5 +1,8 @@
 package com.example.my_movie_search.view.details
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -110,7 +113,9 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
                 iconRes = android.R.drawable.sym_action_call,
                 textRes = R.string.call,
                 onCustomAction = Runnable {
-                    Toast.makeText(requireContext(), resources.getString(R.string.call), Toast.LENGTH_SHORT).show()
+                    startActivity(
+                        Intent(Intent.ACTION_DIAL, Uri.parse("tel:"))
+                    )
                 }
             )
         )
@@ -120,7 +125,9 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
                 iconRes = R.drawable.baseline_message_24,
                 textRes = R.string.message,
                 onCustomAction = Runnable {
-                    Toast.makeText(requireContext(), resources.getString(R.string.message), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(requireContext(), resources.getString(R.string.message), Toast.LENGTH_SHORT).show()
+
+                    navigator().showContentProviderFragment(Manifest.permission.SEND_SMS, ContentProviderFragment.TAG)
                 }
             )
         )
@@ -132,7 +139,8 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
                 onCustomAction = Runnable {
 //                    Toast.makeText(requireContext(), resources.getString(R.string.contacts), Toast.LENGTH_SHORT).show()
 
-                    navigator().showContentProviderFragment(ContentProviderFragment.TAG) //бла
+//                    navigator().showContentProviderFragment(ContentProviderFragment.TAG)
+                    navigator().showContentProviderFragment(Manifest.permission.READ_CONTACTS, ContentProviderFragment.TAG)
                 }
             )
         )

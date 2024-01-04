@@ -197,10 +197,13 @@ class MainActivity : AppCompatActivity(), Navigator {
         launchFragment(DetailMovieFragment.newInstance(movie), tag)
     }
 
-    override fun showContentProviderFragment(tag: String) {
-        launchFragment(ContentProviderFragment.newInstance(), tag)
+    override fun showContentProviderFragment(permission: String, tag: String) {
+        launchFragment(ContentProviderFragment.newInstance(permission), tag)
     }
 
+//    override fun showContentProviderFragment(tag: String) {
+//        launchFragment(ContentProviderFragment.newInstance(), tag)
+//    }
 
     override fun goBack() {
         onBackPressedDispatcher.onBackPressed()

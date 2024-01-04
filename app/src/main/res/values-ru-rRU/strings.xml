@@ -59,4 +59,25 @@
     <string name="gallery">Галерея</string>
     <string name="enlarge_image">pl изображение</string>
     <string name="contacts">Контакты</string>
+    <string name="take_advantage">Воспользоваться</string>
+    <string name="one_try">
+        У вас осталась 1 попытка получить доступ через приложение.\nВ последствии,
+    </string>
+    <string name="change_application_settings">
+        Вы можете изменить состояние доступа через настройки приложения
+    </string>
+    <string name="close">Закрыть</string>
+    <string name="as_contacts">контактам</string>
+    <string name="sms">SMS</string>
+    <string name="not_have_access">У приложения нет доступа к </string>
+    <string name="contacts_click_continue">
+        Для вывода контактов на экран приложению требуется доступ к контактам
+        для получения доступа нажмите ПРОДОЛЖИТЬ
+    </string>
+    <string name="sms_click_continue">
+        Для вывода SMS на экран приложению требуется доступ к SMS
+        для получения доступа нажмите ПРОДОЛЖИТЬ
+    </string>
+    <string name="go_on">ПРОДОЛЖИТЬ</string>
+    <string name="cancellation">ОТМЕНА</string>
 </resources>

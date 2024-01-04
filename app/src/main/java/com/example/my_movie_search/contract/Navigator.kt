@@ -31,5 +31,7 @@ interface Navigator {
         listener: ResultListener<T>
      )
 
-    fun showContentProviderFragment(tag: String)
+    fun showContentProviderFragment(permission: String, tag: String)
+
+//    fun showContentProviderFragment(tag: String)
 }

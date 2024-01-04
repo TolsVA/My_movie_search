@@ -59,4 +59,26 @@
     <string name="gallery">gallery</string>
     <string name="enlarge_image">enlarge_image</string>
     <string name="contacts">contacts</string>
+    <string name="take_advantage">Take advantage</string>
+    <string name="one_try">
+        You have 1 attempt left to gain access through the application.\n
+        Subsequently,
+    </string>
+    <string name="change_application_settings">
+        you can change the access status through the application settings
+    </string>
+    <string name="close">Close</string>
+    <string name="as_contacts">contacts</string>
+    <string name="sms">SMS</string>
+    <string name="not_have_access">The application does not have access to </string>
+    <string name="contacts_click_continue">
+        To display contacts on the screen, the application requires access to contacts
+        to gain access press CONTINUE
+    </string>
+    <string name="sms_click_continue">
+        To display SMS on the screen, the application requires access to SMS
+        to gain access press CONTINUE
+    </string>
+    <string name="go_on">CONTINUE</string>
+    <string name="cancellation">CANCELLATION</string>
 </resources>
