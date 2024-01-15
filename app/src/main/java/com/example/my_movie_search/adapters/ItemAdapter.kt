@@ -92,6 +92,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemHolder>() {
             if (item is MyContact) {
                 view.rootView.findViewById<TextView>(R.id.textViewTell).text = item.phone
                 view.rootView.findViewById<TextView>(R.id.textView3).text = item.name
+                view.rootView.findViewById<TextView>(R.id.textViewSMS).text = item.sms
             }
         }
     }

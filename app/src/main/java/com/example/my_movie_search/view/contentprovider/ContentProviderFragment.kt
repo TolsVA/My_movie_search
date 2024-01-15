@@ -75,6 +75,10 @@ class ContentProviderFragment : Fragment() {
             getLiveDataContact().observe(viewLifecycleOwner) {
                 setData(it)
             }
+
+            getLiveDataSMS().observe(viewLifecycleOwner) {
+                setData(it)
+            }
         }
         registerPermissionListener()
         checkPermission()
@@ -109,11 +113,13 @@ class ContentProviderFragment : Fragment() {
 
                         Manifest.permission.SEND_SMS -> {
 //                            getSMS()
-                            Toast.makeText(
-                                context,
-                                "Разрешение SMS получено",
-                                Toast.LENGTH_LONG
-                            ).show()
+//                            Toast.makeText(
+//                                context,
+//                                "Разрешение SMS получено",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+
+                            contentProviderViewModel.getListSMS()
                         }
 
                         else -> {
@@ -193,11 +199,13 @@ class ContentProviderFragment : Fragment() {
 
                     it[Manifest.permission.SEND_SMS] == true -> {
 //                        getSMS()
-                        Toast.makeText(
-                            context,
-                            "Разрешение SMS получено",
-                            Toast.LENGTH_LONG
-                        ).show()
+//                        Toast.makeText(
+//                            context,
+//                            "Разрешение SMS получено",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+                        contentProviderViewModel.getListSMS()
+
                     }
 
                     !shouldShowRequestPermissionRationale(permission) -> {

@@ -3,11 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_margin="10dp">
 
     <ImageView
         android:id="@+id/iv_contact"
-        android:layout_width="50dp"
+        android:layout_width="60dp"
         android:layout_height="0dp"
         android:background="@drawable/ic_launcher_foreground"
         app:layout_constraintDimensionRatio="@string/square_contacts"
@@ -18,7 +20,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Какойто текст"
+        android:hint="Имя"
         android:textColor="@color/it"
         app:layout_constraintStart_toEndOf="@+id/iv_contact"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,6 +33,15 @@
         android:textColor="@color/it"
         app:layout_constraintStart_toEndOf="@+id/iv_contact"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textViewSMS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="SMS"
+        android:textColor="@color/it"
+        app:layout_constraintStart_toEndOf="@+id/iv_contact"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTell" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

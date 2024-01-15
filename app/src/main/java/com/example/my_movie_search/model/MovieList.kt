@@ -91,5 +91,5 @@ data class Trailers (
 @Parcelize
 data class Videos (
   val trailers : MutableList<Trailers>,
-  val teasers  : MutableList<String>
+  val teasers  : MutableList<String>?
 ): Parcelable

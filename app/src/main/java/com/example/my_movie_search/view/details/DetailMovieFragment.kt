@@ -4,12 +4,17 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.telephony.SmsManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.my_movie_search.R
 import com.example.my_movie_search.adapters.AdapterItem
 import com.example.my_movie_search.adapters.ItemAdapter
@@ -24,6 +29,7 @@ import com.example.my_movie_search.model.Persons
 import com.example.my_movie_search.utils.mySetText
 import com.example.my_movie_search.view.contentprovider.ContentProviderFragment
 import com.squareup.picasso.Picasso
+import kotlin.math.log
 
 class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCustomActionBottomNavigation {
 
@@ -127,7 +133,12 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
                 onCustomAction = Runnable {
 //                    Toast.makeText(requireContext(), resources.getString(R.string.message), Toast.LENGTH_SHORT).show()
 
-                    navigator().showContentProviderFragment(Manifest.permission.SEND_SMS, ContentProviderFragment.TAG)
+//                    navigator().showContentProviderFragment(Manifest.permission.SEND_SMS, ContentProviderFragment.TAG)
+                    val intent = Intent()
+                    intent.setAction(Intent.ACTION_VIEW)
+                    intent.putExtra("sms_body", "Some SMS text");
+                    intent.setType("vnd.android-dir/mms-sms")
+                    startActivity(intent)
                 }
             )
         )
@@ -152,11 +163,21 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
         navigator().goBack()
     }
 
-    private fun renderData(movie: Movie) {
+    private fun  renderData(movie: Movie) {
         binding.apply {
-            Picasso.get()
-                .load(movie.poster?.url)
-                .into(ivMovieDetail)
+//            Picasso.get()
+//                .load(movie.poster?.url)
+//                .into(ivMovieDetail)
+
+            context?.let {
+                Glide
+                    .with(it)
+                    .load(movie.poster?.url)
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(
+                        ivMovieDetail
+                    )
+            }
 
             rvListPersons.layoutManager = LinearLayoutManager(
                 context,
@@ -202,6 +223,18 @@ class DetailMovieFragment : Fragment(), HasCustomTitle, HasCustomAction, HasCust
             }
 
             tvDescription.mySetText(movie.description)
+
+            ivMovieDetail.setOnClickListener {
+                val uriString= "https://www.youtube.com/embed/0RqDiYnFxTk"
+//                Log.d("MyLog", (movie.videos?.trailers?.get(0)?.name).toString())
+
+                val intentUri = Uri.parse(uriString)
+                val intent = Intent()
+                intent.setAction(Intent.ACTION_VIEW)
+//                intent.setDataAndType(intentUri, "video/mp4")
+                intent.setDataAndType(intentUri, "internet")
+                startActivity(intent)
+            }
         }
     }
 
